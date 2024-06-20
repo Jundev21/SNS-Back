@@ -1,0 +1,40 @@
+spring:
+  profiles:
+    active: develop
+---
+spring:
+  config:
+    activate:
+      on-profile: default
+
+  datasource:
+    hikari.maximum-pool-size: 4
+    url: ${DATABASE_AWS_URL}
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    database: postgresql
+    hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
+    hibernate.ddl-auto: update
+    show-sql: true
+    open-in-view: false
+jwt:
+  secret:
+    key: ${JWT_KEY}
+  token:
+    expired-time: ${JWT_EXPIRED}
+
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+---
+spring:
+  config:
+    activate:
+      on-profile: develop
+
+
+
