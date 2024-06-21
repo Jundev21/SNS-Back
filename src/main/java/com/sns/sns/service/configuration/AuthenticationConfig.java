@@ -1,16 +1,18 @@
 package com.sns.sns.service.configuration;
 
 
+import com.sns.sns.service.common.exception.securityException.UnAuthorizedException;
 import com.sns.sns.service.configuration.filter.JwtFilter;
-import com.sns.sns.service.domain.exception.CustomAuthenticationEntryPoint;
 import com.sns.sns.service.domain.member.service.MemberService;
+import com.sns.sns.service.jwt.JwtTokenInfo;
 import com.sns.sns.service.jwt.JwtTokenUtil;
+import com.sns.sns.service.jwt.MemberDetailService;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.CorsConfigurer;
@@ -20,7 +22,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import org.springframework.web.filter.OncePerRequestFilter;
 
 import static org.springframework.security.web.util.matcher.RegexRequestMatcher.regexMatcher;
 
@@ -28,8 +29,9 @@ import static org.springframework.security.web.util.matcher.RegexRequestMatcher.
 @RequiredArgsConstructor
 public class AuthenticationConfig{
 
-    private final JwtTokenUtil jwtTokenUtil;
-    private final MemberService memberService;
+    private final JwtTokenInfo jwtTokenInfo;
+    private final MemberDetailService memberDetailService;
+    private final UnAuthorizedException unAuthorizedException;
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
@@ -51,19 +53,18 @@ public class AuthenticationConfig{
                         .requestMatchers("/api/*/users/join").permitAll()
                         .requestMatchers("/api/*/users/login").permitAll()
                         .requestMatchers(HttpMethod.GET,"/api/v1/board").permitAll()
-                        .requestMatchers("/api/v1/users/login").permitAll()
-                        .requestMatchers("/api/v1/users/register").permitAll()
+                        // .requestMatchers("/api/v1/users/login").permitAll()
+                        // .requestMatchers("/api/v1/users/register").permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/api/v1/favorite/board/*")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/api/v1/user/board/*/comment")).permitAll()
                         .requestMatchers("/api/**").authenticated()
                         .anyRequest().permitAll()
 
                 )
-
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .addFilterBefore(new JwtFilter(jwtTokenUtil, memberService), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtFilter(jwtTokenInfo, memberDetailService), UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling((exceptionConfig) ->
-                        exceptionConfig.authenticationEntryPoint(new CustomAuthenticationEntryPoint())
+                        exceptionConfig.authenticationEntryPoint(unAuthorizedException)
                 )
                 .build();
 

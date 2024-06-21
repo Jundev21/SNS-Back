@@ -35,34 +35,34 @@ public class MemberController {
     }
 
     @PostMapping("/login")
-    public Response<LoginResponse> memberLogin(
+    public DataResponse<LoginResponse> memberLogin(
             @RequestBody LoginRequest loginRequest
             ){
-        return Response.success(memberService.memberLogin(loginRequest));
+        return DataResponse.successBodyResponse(HttpStatus.OK,memberService.memberLogin(loginRequest));
     }
 
 
     @GetMapping
-    public Response<MemberInfoResponse> memberInfo(
+    public DataResponse<MemberInfoResponse> memberInfo(
             @AuthenticationPrincipal Member member
     ){
-        return Response.success(memberService.getMemberInfo(member));
+        return DataResponse.successBodyResponse(HttpStatus.OK,memberService.getMemberInfo(member));
     }
 
     @PutMapping
-    public Response<MemberInfoResponse> memberUpdate(
+    public DataResponse<MemberInfoResponse> memberUpdate(
             @RequestBody MemberUpdateRequest memberUpdateRequest,
             @AuthenticationPrincipal Member member
     ){
-        return Response.success(memberService.memberUpdate(memberUpdateRequest,member));
+        return DataResponse.successBodyResponse(HttpStatus.OK,memberService.memberUpdate(memberUpdateRequest,member));
     }
 
     @DeleteMapping
-    public Response<String> memberUpdate(
+    public DataResponse<String> memberUpdate(
             @AuthenticationPrincipal Member member
     ){
         memberService.deleteMember(member);
-        return Response.success("DELETED");
+        return DataResponse.successBodyResponse(HttpStatus.OK,"DELETED");
     }
 
 }

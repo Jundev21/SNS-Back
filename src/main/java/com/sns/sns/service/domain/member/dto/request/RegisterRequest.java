@@ -1,8 +1,18 @@
 package com.sns.sns.service.domain.member.dto.request;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
 public record RegisterRequest(
-        String userName,
-        String password,
+
+		@NotNull(message = "아이디는 필수 값 입니다.")
+		String userLoginId,
+		@NotNull(message = "이름은 필수 값 입니다.")
+		String userName,
+		@NotNull(message = "비밀번호는 필수 값 입니다.")
+		String password,
+		@NotNull(message = "비밀번호는 필수 값 입니다.")
+		String checkPassword,
         String userEmail
 ) {
 }

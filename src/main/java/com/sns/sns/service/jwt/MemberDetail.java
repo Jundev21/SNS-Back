@@ -21,6 +21,10 @@ public class MemberDetail implements UserDetails {
 		return Collections.singleton(new SimpleGrantedAuthority(this.memberEntity.getRole().toString()));
 	}
 
+	public void UpdateVisitedCount(){
+		this.memberEntity.UpdateVisitedCount();
+	}
+
 	@Override
 	public String getPassword() {
 		return memberEntity.getPassword();

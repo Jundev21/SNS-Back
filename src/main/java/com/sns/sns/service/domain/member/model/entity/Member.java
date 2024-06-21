@@ -28,10 +28,11 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Member extends BaseTimeEntity implements UserDetails {
+public class Member extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private String userLoginId;
     private String userName;
     private String userEmail;
     private String password;
@@ -48,10 +49,12 @@ public class Member extends BaseTimeEntity implements UserDetails {
     private List<NotificationEntity> notificationEntityList = new ArrayList<>();
     @JsonIgnore
     public Member(
+            String userLoginId,
             String username,
             String password,
             String userEmail
     ){
+        this.userLoginId = userLoginId;
         this.userName = username;
         this.password = password;
         this.userEmail = userEmail;
@@ -68,39 +71,39 @@ public class Member extends BaseTimeEntity implements UserDetails {
         this.visitedTimes +=1;
     }
 
-    @Override
-    @JsonIgnore
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(this.getRole().toString()));
-    }
-
-    @Override
-    @JsonIgnore
-    public String getUsername() {
-        return this.userName;
-    }
-
-    @Override
-    @JsonIgnore
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    @JsonIgnore
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    @JsonIgnore
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    @JsonIgnore
-    public boolean isEnabled() {
-        return true;
-    }
+    // @Override
+    // @JsonIgnore
+    // public Collection<? extends GrantedAuthority> getAuthorities() {
+    //     return List.of(new SimpleGrantedAuthority(this.getRole().toString()));
+    // }
+    //
+    // @Override
+    // @JsonIgnore
+    // public String getUsername() {
+    //     return this.userName;
+    // }
+    //
+    // @Override
+    // @JsonIgnore
+    // public boolean isAccountNonExpired() {
+    //     return true;
+    // }
+    //
+    // @Override
+    // @JsonIgnore
+    // public boolean isAccountNonLocked() {
+    //     return true;
+    // }
+    //
+    // @Override
+    // @JsonIgnore
+    // public boolean isCredentialsNonExpired() {
+    //     return true;
+    // }
+    //
+    // @Override
+    // @JsonIgnore
+    // public boolean isEnabled() {
+    //     return true;
+    // }
 }

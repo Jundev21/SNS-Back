@@ -7,6 +7,7 @@ import jakarta.persistence.Enumerated;
 
 public record RegisterResponse(
         Long id,
+        String userLoginId,
         String userName,
         UserRole role
 ) {
@@ -14,7 +15,8 @@ public record RegisterResponse(
     public static RegisterResponse fromEntity(Member member){
         return new RegisterResponse(
                 member.getId(),
-                member.getUsername(),
+                member.getUserLoginId(),
+                member.getUserName(),
                 member.getRole()
         );
 
