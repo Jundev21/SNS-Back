@@ -1,8 +1,12 @@
 package com.sns.sns.service.configuration.filter;
 
+import com.sns.sns.service.common.exception.ErrorCode;
 import com.sns.sns.service.domain.member.model.entity.Member;
 import com.sns.sns.service.domain.member.service.MemberService;
+import com.sns.sns.service.jwt.JwtTokenInfo;
 import com.sns.sns.service.jwt.JwtTokenUtil;
+import com.sns.sns.service.jwt.MemberDetailService;
+
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -13,6 +17,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -26,8 +31,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
 
-    private final JwtTokenUtil jwtTokenUtil;
-    private final MemberService memberService;
+    private final JwtTokenInfo jwtTokenInfo;
+    private final MemberDetailService memberDetailService;
     private final static List<String> TOKEN_IN_PARAM_URLS = List.of("/api/v1/users/notification/subscribe");
 
     //jwt filter 는 클라이언트 요청이 올때 서블릿에 바로 들어가지않고 먼저 필터링을 거친다.
@@ -54,20 +59,26 @@ public class JwtFilter extends OncePerRequestFilter {
                 jwtToken = getHeader.split(" ")[1].trim();
             }
 
-            if (jwtTokenUtil.isTokenExpired(jwtToken)) {
+            if (jwtTokenInfo.isValidToken(jwtToken)) {
                 log.error("토큰 만료되었습니다.");
+                log.error(ErrorCode.INVALID_TOKEN.getMsg());
                 filterChain.doFilter(request, response);
                 return;
             }
 
-            String userName = jwtTokenUtil.getUserName(jwtToken);
-            Member member = memberService.loadMemberByMemberName(userName);
+            String userLoginId = jwtTokenInfo.extractLoginId(jwtToken);
+            //여기서 데이터베이스에있는지 체크
+            //데이터 체크가 완료됐으면 다음 UsernameToken 을 통하여 인증을 거친다.
+            //AbstractAuthenticationToken은 Authentication을 상속받는다는 것을 알 수 있다.
+            //즉, UsernamePasswordAuthenticationToken은 추후 인증이 끝나고 SecurityContextHolder.getContext()에 등록될 Authentication 객체이다.
 
-            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                    member, null, member.getAuthorities());
+            UserDetails memberDetails = memberDetailService.loadUserByUsername(userLoginId);
+            UsernamePasswordAuthenticationToken authenticationToken
+                = new UsernamePasswordAuthenticationToken(memberDetails, null, memberDetails.getAuthorities());
 
-            authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+            authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+            SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+            filterChain.doFilter(request, response);
 
         } catch (RuntimeException e) {
             log.error("헤더를 가지고 오지 못했습니다.", e.toString());
