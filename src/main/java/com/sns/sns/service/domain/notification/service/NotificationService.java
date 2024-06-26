@@ -1,9 +1,18 @@
 package com.sns.sns.service.domain.notification.service;
 
+import java.io.IOException;
+import java.util.List;
 
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
+
+import com.sns.sns.service.common.exception.BasicException;
+import com.sns.sns.service.common.exception.ErrorCode;
+import com.sns.sns.service.domain.comment.model.CommentEntity;
 import com.sns.sns.service.domain.comment.repository.CommentRepository;
-import com.sns.sns.service.domain.exception.BasicException;
-import com.sns.sns.service.domain.exception.ErrorCode;
+import com.sns.sns.service.domain.favorite.model.FavoriteEntity;
 import com.sns.sns.service.domain.favorite.repository.FavoriteRepository;
 import com.sns.sns.service.domain.member.model.entity.Member;
 import com.sns.sns.service.domain.member.repository.MemberRepository;
@@ -12,19 +21,9 @@ import com.sns.sns.service.domain.notification.dto.response.SseResponse;
 import com.sns.sns.service.domain.notification.model.NotificationEntity;
 import com.sns.sns.service.domain.notification.repository.NotificationRepository;
 import com.sns.sns.service.domain.notification.repository.SseRepository;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
-
-
-import java.io.IOException;
-import java.util.List;
-
-import static com.sns.sns.service.domain.exception.ErrorCode.NOT_EXIST_MEMBER;
 
 @Service
 @Slf4j
@@ -32,81 +31,86 @@ import static com.sns.sns.service.domain.exception.ErrorCode.NOT_EXIST_MEMBER;
 @Transactional
 public class NotificationService {
 
-    private final NotificationRepository notificationRepository;
-    private final MemberRepository memberRepository;
-    private final CommentRepository commentRepository;
-    private final FavoriteRepository favoriteRepository;
-    private final SseRepository sseRepository;
-    private final KafkaTemplate<String, Object> kafkaTemplate;
+	private final NotificationRepository notificationRepository;
+	private final MemberRepository memberRepository;
+	private final CommentRepository commentRepository;
+	private final FavoriteRepository favoriteRepository;
+	private final SseRepository sseRepository;
+	private final KafkaTemplate<String, Object> kafkaTemplate;
 
-    private final String kafkaTopic = "notification";
-    private final static String EVENT_NAME = "alarm";
-    private final static Long DEFAULT_TIME = 60L * 1000 * 60;
+	private final String kafkaTopic = "notification";
+	private final static String EVENT_NAME = "sse";
+	private final static Long DEFAULT_TIME = 30L*60*1000;
 
-    //polling 방식 - 프론트엔드 계속해서 데이터 요청을 보내야한다.
-    public NotificationResponse makeNotification(Member member) {
+	//polling 방식 - 프론트엔드 계속해서 데이터 요청을 보내야한다.
+	public NotificationResponse makeNotification(Member member) {
 
-        //알림을 받는 사용자가아니라
-        List<NotificationEntity> findNotification = notificationRepository.findAllByMemberOrderByCreatedTimeDesc(member);
+		//알림을 받는 사용자가아니라
+		List<NotificationEntity> findNotification = notificationRepository.findAllByMemberOrderByCreatedTimeDesc(
+			member);
 
-        //알림을 받는 사용자의 커멘트 좋아요가 아니라 알림을 요청 한 사용자 => 코멘트나 라이크를 누른 사용자
-//        List<CommentEntity> commentPostResponseList = commentRepository.findAllByMember(findNotification.getMember());
-//        List<FavoriteEntity> favoriteEntityList = favoriteRepository.findAllByMember(findNotification.getMember());
-//        return NotificationResponse.notificationResponse(commentPostResponseList, favoriteEntityList, findNotification);
-        return NotificationResponse.notificationResponse(null, null, findNotification,member);
-    }
+		//알림을 받는 사용자의 커멘트 좋아요가 아니라 알림을 요청 한 사용자 => 코멘트나 라이크를 누른 사용자
+		//        List<CommentEntity> commentPostResponseList = commentRepository.findAllByMember(findNotification.getMember());
+		//        List<FavoriteEntity> favoriteEntityList = favoriteRepository.findAllByMember(findNotification.getMember());
+		//        return NotificationResponse.notificationResponse(commentPostResponseList, favoriteEntityList, findNotification);
+		return NotificationResponse.notificationResponse(null, null, findNotification, member);
+	}
 
-    public void sendToBrowser(Member receiver, Member sender, Long notificationId) {
-        Member findMember = memberRepository.findById(receiver.getId())
-                .orElseThrow(() -> new BasicException(NOT_EXIST_MEMBER, ErrorCode.NOT_EXIST_BOARD.getMessage()));
+	public void sendToBrowser(Member receiver, Member sender, Long notificationId) {
+		Member findReceiver = checkExistMember(receiver);
+		Member findSender = checkExistMember(sender);
+		SseResponse sseResponse = new SseResponse(findSender.getUserLoginId());
 
-        SseResponse sseResponse = new SseResponse(sender.getUsername());
-        sseRepository.get(findMember.getId()).ifPresent(currentEmitter -> {
-            try {
-                currentEmitter.send(
-                        SseEmitter.event()
-                                .id(notificationId.toString())
-                                .name(EVENT_NAME)
-                                .data(sseResponse));
-            } catch (IOException e) {
-                sseRepository.delete(findMember.getId());
-                throw new RuntimeException("can't connect");
-            }
-        });
-    }
+		System.out.println("send new event");
+		sseRepository.get(findReceiver.getUserLoginId()).ifPresent(currentEmitter -> {
+			try {
+				currentEmitter.send(
+					SseEmitter.event()
+						.id(notificationId.toString())
+						.name(EVENT_NAME)
+						.data(sseResponse));
+			} catch (IOException e) {
+				throw new RuntimeException("can't connect");
+			}
+		});
+	}
 
-    public SseEmitter sseConnector(Member member) {
+	// nginx http version 1.1 로 변경
+	public SseEmitter sseConnector(Member member) {
+		Member findMember = checkExistMember(member);
+		SseEmitter sseEmitter = new SseEmitter(DEFAULT_TIME);
+		sseRepository.saveEmitter(findMember.getUserLoginId(), sseEmitter);
 
-        Member findMember = memberRepository.findById(member.getId())
-                .orElseThrow(() -> new BasicException(NOT_EXIST_MEMBER, ErrorCode.NOT_EXIST_BOARD.getMessage()));
+		System.out.println("connected from server");
+		sseEmitter.onCompletion(() -> System.out.println("SSE connection completed for user: " + findMember.getUserLoginId()));
+		sseEmitter.onTimeout(() -> System.out.println("SSE connection timed out for user: " + findMember.getUserLoginId()));
 
-        SseEmitter sseEmitter = new SseEmitter(DEFAULT_TIME);
-        sseRepository.saveEmitter(findMember.getId(), sseEmitter);
+		System.out.println(member.getUsername() + " " + member.getId());
+		try {
+			sseEmitter.send(
+				SseEmitter
+					.event()
+					.id("id")
+					.name(EVENT_NAME)
+					.data("success connected from server"));
 
-        sseEmitter.onCompletion(() -> sseRepository.delete(findMember.getId()));
-        sseEmitter.onTimeout(() -> sseRepository.delete(findMember.getId()));
+			System.out.println("FINISHED SEND MESSAGE to " + EVENT_NAME);
 
-        try {
-             sseEmitter.send(
-                    SseEmitter
-                            .event()
-                            .id("id")
-                            .name(EVENT_NAME)
-                            .data("connected"));
+		} catch (IOException e) {
+			throw new RuntimeException("can't connect");
+		}
+		return sseEmitter;
+	}
 
+	public void sendProducer(String msg) {
+		kafkaTemplate.send(kafkaTopic, msg);
+	}
 
-        } catch (IOException e) {
-            throw new RuntimeException("can't connect");
-        }
-        return sseEmitter;
-    }
+	//    @KafkaListener(topics = kafkaTopic, groupId = "notificationGroup")
 
-    public void sendProducer(String msg){
-        kafkaTemplate.send(kafkaTopic, msg);
-    }
-
-//    @KafkaListener(topics = kafkaTopic, groupId = "notificationGroup")
-    public void notificationConsumer(String message){
-        System.out.printf("Subscribed : " + message);
-    }
+	@Transactional(readOnly = true)
+	private Member checkExistMember(Member member) {
+		return memberRepository.findByUserName(member.getUserLoginId())
+			.orElseThrow(() -> new BasicException(ErrorCode.NOT_EXIST_MEMBER, ErrorCode.NOT_EXIST_MEMBER.getMsg()));
+	}
 }
