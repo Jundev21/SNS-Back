@@ -1,6 +1,7 @@
 package com.sns.sns.service.domain.member.controller;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -8,7 +9,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.sns.sns.service.common.basicResponse.DataResponse;
 import com.sns.sns.service.domain.member.dto.request.LoginRequest;
@@ -51,12 +54,13 @@ public class MemberController {
 		return DataResponse.successBodyResponse(HttpStatus.OK, memberService.getMemberInfo(member));
 	}
 
-	@PutMapping
+	@PostMapping
 	public DataResponse<MemberInfoResponse> memberUpdate(
-		@RequestBody MemberUpdateRequest memberUpdateRequest,
+		@RequestPart MemberUpdateRequest memberUpdateRequest,
+		@RequestPart(required = false) MultipartFile image,
 		@AuthenticationPrincipal Member member
 	) {
-		return DataResponse.successBodyResponse(HttpStatus.OK, memberService.memberUpdate(memberUpdateRequest, member));
+		return DataResponse.successBodyResponse(HttpStatus.OK, memberService.memberUpdate(memberUpdateRequest,image, member));
 	}
 
 	@DeleteMapping

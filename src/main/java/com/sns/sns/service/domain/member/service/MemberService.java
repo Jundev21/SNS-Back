@@ -6,9 +6,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.sns.sns.service.common.exception.BasicException;
 import com.sns.sns.service.common.exception.ErrorCode;
+import com.sns.sns.service.configuration.GoogleDriveConfig;
 import com.sns.sns.service.domain.member.dto.request.LoginRequest;
 import com.sns.sns.service.domain.member.dto.request.MemberUpdateRequest;
 import com.sns.sns.service.domain.member.dto.request.RegisterRequest;
@@ -18,7 +20,6 @@ import com.sns.sns.service.domain.member.dto.response.RegisterResponse;
 import com.sns.sns.service.domain.member.model.entity.Member;
 import com.sns.sns.service.domain.member.repository.MemberRepository;
 import com.sns.sns.service.jwt.JwtTokenInfo;
-import com.sns.sns.service.jwt.MemberDetail;
 
 import lombok.RequiredArgsConstructor;
 
@@ -27,6 +28,7 @@ import lombok.RequiredArgsConstructor;
 public class MemberService {
 
 	private final MemberRepository memberRepository;
+	private final GoogleDriveConfig googleDriveConfig;
 	private final BCryptPasswordEncoder encoder;
 	private final AuthenticationManager authenticationManager;
 	private final JwtTokenInfo jwtTokenInfo;
@@ -40,12 +42,13 @@ public class MemberService {
 				registerRequest.userLoginId(),
 				registerRequest.userName(),
 				encoder.encode(registerRequest.password()),
-				registerRequest.userEmail()
+				registerRequest.userEmail(),
+				""
 			));
 		return RegisterResponse.fromEntity(newMember);
 	}
 
-	@Transactional(readOnly = true)
+	@Transactional
 	public LoginResponse memberLogin(LoginRequest loginRequest) {
 		//로컬 레디스 저장
 		//Member member = loadMemberByMemberName(loginRequest.userName());
@@ -56,18 +59,24 @@ public class MemberService {
 				loginRequest.password()
 			)
 		);
-		MemberDetail memberDetail = (MemberDetail)authentication.getPrincipal();
+		Member memberDetail = (Member)authentication.getPrincipal();
 		memberDetail.UpdateVisitedCount();
 		String generatedJwtToken = jwtTokenInfo.generateToken(memberDetail.getUsername());
 		return new LoginResponse(generatedJwtToken, null);
 	}
 
 	@Transactional
-	public MemberInfoResponse memberUpdate(MemberUpdateRequest memberUpdateRequest, Member member) {
+	public MemberInfoResponse memberUpdate(MemberUpdateRequest memberUpdateRequest, MultipartFile image, Member member) {
 		notValidMember(member.getUserLoginId());
-		member.UpdateMemberInfo(memberUpdateRequest.userEmail(), encoder.encode(memberUpdateRequest.password()));
+		String imageUrl = googleDriveConfig.uploadImageToGoogleDrive(image);
+		member.UpdateMemberInfo(memberUpdateRequest.userEmail(), encoder.encode(memberUpdateRequest.password()),imageUrl);
 		return MemberInfoResponse.memberInfo(member);
+	}
 
+	@Transactional
+	public void deleteMember(Member member) {
+		notValidMember(member.getUserLoginId());
+		memberRepository.delete(member);
 	}
 
 	@Transactional(readOnly = true)
@@ -76,16 +85,9 @@ public class MemberService {
 		return MemberInfoResponse.memberInfo(member);
 	}
 
-	@Transactional
-	public void deleteMember(Member member) {
-		notValidMember(member.getUserLoginId());
-		memberRepository.delete(member);
-
-	}
-
 	@Transactional(readOnly = true)
 	public void checkExistMember(String loginId) {
-		Boolean isExistMember = memberRepository.existsByMemberLoginId(loginId);
+		Boolean isExistMember = memberRepository.existsByUserLoginId(loginId);
 		if (isExistMember) {
 			throw new BasicException(ErrorCode.ALREADY_EXIST_MEMBER, ErrorCode.ALREADY_EXIST_MEMBER.getMsg());
 		}
@@ -93,12 +95,11 @@ public class MemberService {
 
 	@Transactional(readOnly = true)
 	public void notValidMember(String loginId) {
-		Boolean isExistMember = memberRepository.existsByMemberLoginId(loginId);
+		Boolean isExistMember = memberRepository.existsByUserLoginId(loginId);
 		if (!isExistMember) {
 			throw new BasicException(ErrorCode.NOT_EXIST_MEMBER, ErrorCode.NOT_EXIST_MEMBER.getMsg());
 		}
 	}
-
 
 	@Transactional(readOnly = true)
 	public void checkPassWordValidation(String originPwd, String checkPwd) {
