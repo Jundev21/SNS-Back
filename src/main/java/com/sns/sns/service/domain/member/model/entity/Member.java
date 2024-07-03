@@ -7,19 +7,19 @@ import com.sns.sns.service.common.BaseTimeEntity;
 import com.sns.sns.service.domain.board.model.BoardEntity;
 import com.sns.sns.service.domain.comment.model.CommentEntity;
 import com.sns.sns.service.domain.favorite.model.FavoriteEntity;
+import com.sns.sns.service.domain.file.model.ImageEntity;
 import com.sns.sns.service.domain.member.model.UserRole;
 import com.sns.sns.service.domain.notification.model.NotificationEntity;
+
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.time.LocalDate;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -28,7 +28,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Member extends BaseTimeEntity {
+public class Member extends BaseTimeEntity implements UserDetails{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -36,6 +36,7 @@ public class Member extends BaseTimeEntity {
     private String userName;
     private String userEmail;
     private String password;
+    private String userProfileImgUrl;
     private long visitedTimes;
     @Enumerated(EnumType.STRING)
     private UserRole role = UserRole.USER;
@@ -47,63 +48,69 @@ public class Member extends BaseTimeEntity {
     private List<CommentEntity> commentEntityList = new ArrayList<>();
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<NotificationEntity> notificationEntityList = new ArrayList<>();
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<ImageEntity> imageEntities = new ArrayList<>();
     @JsonIgnore
     public Member(
             String userLoginId,
             String username,
             String password,
-            String userEmail
+            String userEmail,
+            String userProfileImgUrl
     ){
         this.userLoginId = userLoginId;
         this.userName = username;
         this.password = password;
         this.userEmail = userEmail;
+        this.userProfileImgUrl = userProfileImgUrl;
     }
     @JsonIgnore
     public void UpdateMemberInfo(
             String userEmail,
-            String password
+            String password,
+            String userProfileImgUrl
     ){
         this.userEmail = userEmail;
         this.password = password;
+        this.userProfileImgUrl = userProfileImgUrl;
     }
     public void UpdateVisitedCount(){
         this.visitedTimes +=1;
     }
 
-    // @Override
-    // @JsonIgnore
-    // public Collection<? extends GrantedAuthority> getAuthorities() {
-    //     return List.of(new SimpleGrantedAuthority(this.getRole().toString()));
-    // }
-    //
-    // @Override
-    // @JsonIgnore
-    // public String getUsername() {
-    //     return this.userName;
-    // }
-    //
-    // @Override
-    // @JsonIgnore
-    // public boolean isAccountNonExpired() {
-    //     return true;
-    // }
-    //
-    // @Override
-    // @JsonIgnore
-    // public boolean isAccountNonLocked() {
-    //     return true;
-    // }
-    //
-    // @Override
-    // @JsonIgnore
-    // public boolean isCredentialsNonExpired() {
-    //     return true;
-    // }
-    //
-    // @Override
-    // @JsonIgnore
-    // public boolean isEnabled() {
-    //     return true;
-    // }
+    @Override
+    @JsonIgnore
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority(this.getRole().toString()));
+    }
+
+    @Override
+    @JsonIgnore
+    public String getUsername() {
+        return this.getUserLoginId();
+    }
+
+    @Override
+    @JsonIgnore
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    @JsonIgnore
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    @JsonIgnore
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    @JsonIgnore
+    public boolean isEnabled() {
+        return true;
+    }
 }

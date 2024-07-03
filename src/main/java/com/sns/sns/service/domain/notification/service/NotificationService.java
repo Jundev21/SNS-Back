@@ -39,7 +39,7 @@ public class NotificationService {
 	private final KafkaTemplate<String, Object> kafkaTemplate;
 
 	private final String kafkaTopic = "notification";
-	private final static String EVENT_NAME = "sse";
+	private final static String EVENT_NAME = "alarm";
 	private final static Long DEFAULT_TIME = 30L*60*1000;
 
 	//polling 방식 - 프론트엔드 계속해서 데이터 요청을 보내야한다.

@@ -60,7 +60,8 @@ public class MemberController {
 		@RequestPart(required = false) MultipartFile image,
 		@AuthenticationPrincipal Member member
 	) {
-		return DataResponse.successBodyResponse(HttpStatus.OK, memberService.memberUpdate(memberUpdateRequest,image, member));
+		return DataResponse.successBodyResponse(HttpStatus.OK,
+			memberService.memberUpdate(memberUpdateRequest, image, member));
 	}
 
 	@DeleteMapping

@@ -1,13 +1,17 @@
+server:
+    http2:
+      enabled: true
+
 spring:
-#  datasource:
-#    url: jdbc:h2:mem:sns
-#    driver-class-name: org.h2.Driver
-#    username: sa
-#    password:
   datasource:
-    url: jdbc:mysql://localhost:3306/sns_service?useSSL=false&serverTimezone=Asia/Seoul&characterEncoding=UTF-8
-    username: root
-    password: wnsfo12!
+    url: jdbc:h2:mem:sns
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+#  datasource:
+#    url: jdbc:mysql://localhost:3306/sns_service?useSSL=false&serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+#    username: root
+#    password:
   h2:
     console:
       enabled: true
@@ -35,5 +39,5 @@ jwt:
   secret:
     key: 612E3DFC176A8E32A3E59C2AC65D2612E3DFC176A8E32A3E59C2AC65D2
   token:
-    expired-time: 2592000000
+    expired-time: 86400000
 

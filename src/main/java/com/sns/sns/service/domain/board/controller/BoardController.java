@@ -2,6 +2,8 @@ package com.sns.sns.service.domain.board.controller;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -20,6 +22,7 @@ import com.sns.sns.service.domain.board.dto.response.BoardDeleteResponse;
 import com.sns.sns.service.domain.board.dto.response.BoardDetailResponse;
 import com.sns.sns.service.domain.board.dto.response.BoardGetResponse;
 import com.sns.sns.service.domain.board.dto.response.BoardResponse;
+import com.sns.sns.service.domain.board.dto.response.BoardSearchResponse;
 import com.sns.sns.service.domain.board.dto.response.BoardUpdateResponse;
 import com.sns.sns.service.domain.board.service.BoardService;
 import com.sns.sns.service.domain.member.model.entity.Member;
@@ -69,16 +72,27 @@ public class BoardController {
 
 	@GetMapping
 	public DataResponse<Page<BoardGetResponse>> getBoard(
-		Pageable pageable
+		@PageableDefault(size = 12, sort = "createdTime", direction = Sort.Direction.DESC) Pageable pageable
 	) {
 		return DataResponse.successBodyResponse(HttpStatus.OK, boardService.getBoard(pageable));
 	}
 
 	@GetMapping("/user")
 	public DataResponse<Page<BoardGetResponse>> getUserBoard(
-		Pageable pageable, @AuthenticationPrincipal Member member
+		@PageableDefault(size = 12, sort = "createdTime", direction = Sort.Direction.DESC) Pageable pageable,
+		@AuthenticationPrincipal Member member
 	) {
 		return DataResponse.successBodyResponse(HttpStatus.OK, boardService.getUserBoard(pageable, member));
+	}
+
+	@GetMapping("/searching/{searchWord}")
+	public DataResponse<Page<BoardSearchResponse>> getSearchResult(
+		@PageableDefault(size = 12, sort = "createdTime", direction = Sort.Direction.DESC) Pageable pageable,
+		@PathVariable String searchWord
+	) {
+
+		System.out.println("search controller");
+		return DataResponse.successBodyResponse(HttpStatus.OK, boardService.getSearchWord(searchWord, pageable));
 	}
 
 }

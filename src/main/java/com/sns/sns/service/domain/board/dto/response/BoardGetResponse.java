@@ -18,9 +18,7 @@ public record BoardGetResponse(
         LocalDateTime createdTime,
         int totalFavoriteNums,
         int totalCommitNums
-
 ) {
-
     public static BoardGetResponse boardGetResponse(BoardEntity board){
         return BoardGetResponse.builder()
                 .id(board.getId())
@@ -32,5 +30,4 @@ public record BoardGetResponse(
                 .createdTime(board.getCreatedTime())
                 .build();
     }
-
 }

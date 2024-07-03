@@ -9,11 +9,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface FavoriteRepository extends JpaRepository<FavoriteEntity,Long> {
-
     Optional<FavoriteEntity> findFavoriteEntityByBoardEntityAndMember(BoardEntity boardEntity, Member member);
     Optional<FavoriteEntity> findByBoardEntity(BoardEntity boardEntity);
     List<FavoriteEntity> findAllByMember(Member member);
-
     boolean existsByBoardEntityAndMember(BoardEntity boardEntity,Member member);
-
 }

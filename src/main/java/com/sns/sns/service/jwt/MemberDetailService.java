@@ -18,10 +18,11 @@ public class MemberDetailService implements UserDetailsService {
 
 	private final MemberRepository memberRepository;
 
+	// 권한 요청할때마다 사용자가 유효한 사용자인지 디비를 거쳤다 간다.
+	// 디비를 거치지않고 레디스 캐쉬를 사용해서 빠르게 확인할 수 있다.
 	@Override
 	public UserDetails loadUserByUsername(String loginId) throws UsernameNotFoundException {
-		Member member = memberRepository.findByUserLoginId(loginId)
+		return memberRepository.findByUserLoginId(loginId)
 			.orElseThrow((() -> new BasicException(ErrorCode.NOT_EXIST_MEMBER, ErrorCode.NOT_EXIST_MEMBER.getMsg())));
-		return new MemberDetail(member);
 	}
 }

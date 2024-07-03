@@ -13,6 +13,7 @@ import com.sns.sns.service.domain.board.dto.response.BoardDeleteResponse;
 import com.sns.sns.service.domain.board.dto.response.BoardDetailResponse;
 import com.sns.sns.service.domain.board.dto.response.BoardGetResponse;
 import com.sns.sns.service.domain.board.dto.response.BoardResponse;
+import com.sns.sns.service.domain.board.dto.response.BoardSearchResponse;
 import com.sns.sns.service.domain.board.dto.response.BoardUpdateResponse;
 import com.sns.sns.service.domain.board.model.BoardEntity;
 import com.sns.sns.service.domain.board.repository.BoardRepository;
@@ -55,20 +56,23 @@ public class BoardService {
 	}
 
 	@Transactional(readOnly = true)
+	public Page<BoardSearchResponse> getSearchWord(String searchWord, Pageable pageable) {
+		Page<BoardEntity> boardEntities = boardRepository.findAllByTitleContainingOrContentsContaining(searchWord,
+			searchWord, pageable);
+		return boardEntities.map(BoardSearchResponse::boardResponse);
+	}
+
+	@Transactional(readOnly = true)
 	public Page<BoardGetResponse> getBoard(Pageable pageable) {
 		Page<BoardEntity> board = boardRepository.findAll(pageable);
-		//        Page<BoardEntity> board = boardRepository.findAllBoard(pageable);
 		return board.map(BoardGetResponse::boardGetResponse);
 	}
 
 	@Transactional(readOnly = true)
 	public Page<BoardGetResponse> getUserBoard(Pageable pageable, Member member) {
-		Member findMember = memberRepository.findByUserName(member.getUserLoginId())
-			.orElseThrow(() -> new BasicException(ErrorCode.NOT_EXIST_MEMBER, ErrorCode.NOT_EXIST_MEMBER.getMsg()));
-
+		Member findMember = checkExistMember(member);
 		Page<BoardEntity> boardEntities = boardRepository.findAllByMember(findMember, pageable);
 		return boardEntities.map(BoardGetResponse::boardGetResponse);
-
 	}
 
 	@Transactional(readOnly = true)
@@ -81,7 +85,6 @@ public class BoardService {
 	private Member checkExistMember(Member member) {
 		return memberRepository.findByUserName(member.getUserLoginId())
 			.orElseThrow(() -> new BasicException(ErrorCode.NOT_EXIST_MEMBER, ErrorCode.NOT_EXIST_MEMBER.getMsg()));
-
 	}
 
 	@Transactional(readOnly = true)
@@ -96,4 +99,5 @@ public class BoardService {
 			throw new BasicException(ErrorCode.INVALID_PERMISSION, ErrorCode.INVALID_PERMISSION.getMsg());
 		}
 	}
+
 }

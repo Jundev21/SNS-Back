@@ -1,6 +1,9 @@
 package com.sns.sns.service.domain.comment.dto.request;
 
-public record CommentPostRequest (
-        String content
-){
+import jakarta.validation.constraints.NotNull;
+
+public record CommentPostRequest(
+	@NotNull(message = "내용을 입력해주세요")
+	String content
+) {
 }

@@ -16,7 +16,7 @@ public record RegisterResponse(
         return new RegisterResponse(
                 member.getId(),
                 member.getUserLoginId(),
-                member.getUserName(),
+                member.getUsername(),
                 member.getRole()
         );
 

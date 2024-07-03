@@ -21,6 +21,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -36,16 +37,12 @@ public class BoardEntity extends BaseTimeEntity {
 	private String contents;
 	@ManyToOne(fetch = FetchType.LAZY)
 	private Member member;
-
-	//    @BatchSize(size = 100)
 	@OneToMany(mappedBy = "boardEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	private List<NotificationEntity> notificationEntityList = new ArrayList<>();
-	//    @BatchSize(size = 100)
+	private List<NotificationEntity> notificationEntityList;
 	@OneToMany(mappedBy = "boardEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	private List<CommentEntity> commentEntityList = new ArrayList<>();
-	//    @BatchSize(size = 100)
+	private List<CommentEntity> commentEntityList;
 	@OneToMany(mappedBy = "boardEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	private List<FavoriteEntity> favoriteEntityList = new ArrayList<>();
+	private List<FavoriteEntity> favoriteEntityList;
 	@Formula("(select count(*) from favorite_entity where favorite_entity.board_entity_id=id)")
 	private long countFavorite;
 	@Formula("(select count(*) from comment_entity where comment_entity.board_entity_id=id)")

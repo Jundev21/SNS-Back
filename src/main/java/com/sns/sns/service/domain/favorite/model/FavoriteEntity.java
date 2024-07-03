@@ -24,8 +24,6 @@ public class FavoriteEntity extends BaseTimeEntity {
     @ManyToOne
     private NotificationEntity notificationEntity;
 
-
-
     public FavoriteEntity(
             BoardEntity board,
             Member member,
@@ -39,6 +37,5 @@ public class FavoriteEntity extends BaseTimeEntity {
     public void isClickedFavorite(boolean isClicked){
         this.isClicked = isClicked;
     }
-
 
 }

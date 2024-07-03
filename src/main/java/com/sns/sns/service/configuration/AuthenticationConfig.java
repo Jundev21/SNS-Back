@@ -2,16 +2,17 @@ package com.sns.sns.service.configuration;
 
 
 import com.sns.sns.service.common.exception.securityException.UnAuthorizedException;
-import com.sns.sns.service.configuration.filter.JwtFilter;
-import com.sns.sns.service.domain.member.service.MemberService;
+
+import com.sns.sns.service.jwt.JwtFilter;
 import com.sns.sns.service.jwt.JwtTokenInfo;
-import com.sns.sns.service.jwt.JwtTokenUtil;
 import com.sns.sns.service.jwt.MemberDetailService;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -38,7 +39,11 @@ public class AuthenticationConfig{
         return (web) -> web.ignoring()
                 .requestMatchers(new AntPathRequestMatcher("/h2-console/**"))
                 .requestMatchers(regexMatcher("^(?!/api/).*"));
+    }
 
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+        return config.getAuthenticationManager();
     }
 
     @Bean
@@ -53,10 +58,11 @@ public class AuthenticationConfig{
                         .requestMatchers("/api/*/users/join").permitAll()
                         .requestMatchers("/api/*/users/login").permitAll()
                         .requestMatchers(HttpMethod.GET,"/api/v1/board").permitAll()
-                        // .requestMatchers("/api/v1/users/login").permitAll()
-                        // .requestMatchers("/api/v1/users/register").permitAll()
+                        .requestMatchers("/api/v1/users/login").permitAll()
+                        .requestMatchers("/api/v1/users/register").permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/api/v1/favorite/board/*")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/api/v1/user/board/*/comment")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/api/v1/board/searching/*")).permitAll()
                         .requestMatchers("/api/**").authenticated()
                         .anyRequest().permitAll()
 

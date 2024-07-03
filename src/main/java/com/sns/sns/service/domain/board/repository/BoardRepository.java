@@ -13,14 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface BoardRepository extends JpaRepository<BoardEntity,Long> {
-
     Page<BoardEntity> findAllByMember(Member member, Pageable pageable);
-    Page<BoardEntity> findAllByOrderByIdDesc(Pageable pageable);
-
-    @Query("select b from BoardEntity b " +
-            "join fetch b.commentEntityList bc " +
-            "join fetch b.favoriteEntityList bf"
-            )
-    Page<BoardEntity> findAllBoard(Pageable pageable);
-
+    Page<BoardEntity> findAllByTitleContainingOrContentsContaining(String title, String contents, Pageable pageable);
+    // "select * from board where title like searchWord or content like searchWord "
 }

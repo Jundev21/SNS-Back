@@ -77,7 +77,7 @@ public class CommentControllerTest {
     @DisplayName("댓글 조회 성공")
     public void successToGetWriteComment() throws Exception {
 
-        when(commentService.getComment(any(),any())).thenReturn(List.of(commentGetResponseData()));
+        when(commentService.getComment(any())).thenReturn(List.of(commentGetResponseData()));
         mockMvc.perform(get("/api/v1/board/1/comment"))
                 .andExpect(status().isOk())
                 .andDo(print());

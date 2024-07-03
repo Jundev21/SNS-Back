@@ -66,10 +66,15 @@ public class MemberService {
 	}
 
 	@Transactional
-	public MemberInfoResponse memberUpdate(MemberUpdateRequest memberUpdateRequest, MultipartFile image, Member member) {
-		notValidMember(member.getUserLoginId());
+	public MemberInfoResponse memberUpdate(MemberUpdateRequest memberUpdateRequest, MultipartFile image,
+		Member member) {
+		Member findMember = notValidMember(member.getUserLoginId());
 		String imageUrl = googleDriveConfig.uploadImageToGoogleDrive(image);
-		member.UpdateMemberInfo(memberUpdateRequest.userEmail(), encoder.encode(memberUpdateRequest.password()),imageUrl);
+		if (imageUrl.isEmpty()) {
+			imageUrl = findMember.getUserProfileImgUrl();
+		}
+		findMember.UpdateMemberInfo(memberUpdateRequest.userEmail(), encoder.encode(memberUpdateRequest.password()),
+			imageUrl);
 		return MemberInfoResponse.memberInfo(member);
 	}
 
@@ -94,11 +99,9 @@ public class MemberService {
 	}
 
 	@Transactional(readOnly = true)
-	public void notValidMember(String loginId) {
-		Boolean isExistMember = memberRepository.existsByUserLoginId(loginId);
-		if (!isExistMember) {
-			throw new BasicException(ErrorCode.NOT_EXIST_MEMBER, ErrorCode.NOT_EXIST_MEMBER.getMsg());
-		}
+	public Member notValidMember(String loginId) {
+		return memberRepository.findByUserLoginId(loginId)
+			.orElseThrow((() -> new BasicException(ErrorCode.NOT_EXIST_MEMBER, ErrorCode.NOT_EXIST_MEMBER.getMsg())));
 	}
 
 	@Transactional(readOnly = true)
