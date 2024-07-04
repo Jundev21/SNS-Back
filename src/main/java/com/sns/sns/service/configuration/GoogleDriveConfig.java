@@ -1,6 +1,8 @@
 package com.sns.sns.service.configuration;
 
 import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collections;
@@ -86,8 +88,16 @@ public class GoogleDriveConfig {
 
 	private Drive connectGoogleDrive() {
 		try {
-			GoogleCredentials credentials = GoogleCredentials.fromStream(new FileInputStream(GOOGLE_KEY_PATH))
+			// GoogleCredentials credentials = GoogleCredentials.fromStream(new FileInputStream(GOOGLE_KEY_PATH))
+			// 	.createScoped(Collections.singleton(DriveScopes.DRIVE));
+			InputStream credentialsStream = getClass().getClassLoader().getResourceAsStream("googleCredential.json");
+			if (credentialsStream == null) {
+				throw new IOException("Resource not found: googleCredential.json");
+			}
+
+			GoogleCredentials credentials = GoogleCredentials.fromStream(credentialsStream)
 				.createScoped(Collections.singleton(DriveScopes.DRIVE));
+
 			return new Drive.Builder(
 				GoogleNetHttpTransport.newTrustedTransport(), JSON_FACTORY,
 				new HttpCredentialsAdapter(credentials)).build();

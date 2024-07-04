@@ -94,7 +94,7 @@ public class BoardControllerTest {
 				1L,
 				boardUpdateRequest.title(),
 				boardUpdateRequest.content(),
-				new BasicUserInfoResponse(1L, "test", 1L),
+				new BasicUserInfoResponse(1L, "test", 1L,""),
 				LocalDateTime.now(),
 				LocalDateTime.now()
 			));
@@ -121,7 +121,7 @@ public class BoardControllerTest {
 					1L,
 					boardUpdateRequest.title(),
 					boardUpdateRequest.content(),
-					new BasicUserInfoResponse(1L, "test", 0L),
+					new BasicUserInfoResponse(1L, "test", 0L,""),
 					LocalDateTime.now(),
 					LocalDateTime.now()
 

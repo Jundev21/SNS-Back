@@ -3,15 +3,15 @@ server:
       enabled: true
 
 spring:
-  datasource:
-    url: jdbc:h2:mem:sns
-    driver-class-name: org.h2.Driver
-    username: sa
-    password:
 #  datasource:
-#    url: jdbc:mysql://localhost:3306/sns_service?useSSL=false&serverTimezone=Asia/Seoul&characterEncoding=UTF-8
-#    username: root
+#    url: jdbc:h2:mem:sns
+#    driver-class-name: org.h2.Driver
+#    username: sa
 #    password:
+  datasource:
+    url: jdbc:mysql://localhost:3306/sns_service?useSSL=false&serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: root
+    password: 1234
   h2:
     console:
       enabled: true
@@ -24,6 +24,7 @@ spring:
         ddl-auto: update
         format_sql: true
 #        default_batch_fetch_size: 1000
+    defer-datasource-initialization: true
 
 
   data:
