@@ -23,7 +23,8 @@ public enum ErrorCode {
 	NOT_EXIST_NOTIFICATION(HttpStatus.NOT_FOUND, "존재하지 않는 알람"),
 	INVALID_PERMISSION(HttpStatus.UNAUTHORIZED, "게시물 작성자가 아닙니다."),
 	INVALID_PERMISSION_FAVORITE(HttpStatus.UNAUTHORIZED, "좋아요를 누른 사용자가 아닙니다."),
-	INVALID_PERMISSION_COMMENT(HttpStatus.UNAUTHORIZED, "댓글 수정 권한이 없습니다.");
+	INVALID_PERMISSION_COMMENT(HttpStatus.UNAUTHORIZED, "댓글 수정 권한이 없습니다."),
+	SSE_CANNOT_CONNECTED(HttpStatus.NOT_FOUND, "SSE 연동실패");
 
 	public final HttpStatus status;
 	private final String msg;

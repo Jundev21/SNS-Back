@@ -23,6 +23,11 @@ import com.sns.sns.service.domain.member.dto.response.RegisterResponse;
 import com.sns.sns.service.domain.member.model.entity.Member;
 import com.sns.sns.service.domain.member.service.MemberService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -33,27 +38,76 @@ public class MemberController {
 
 	private final MemberService memberService;
 
+	@Operation(summary = "사용자 회원가입 API")
+	@ApiResponses(value = {
+		@ApiResponse(
+			description = "회원가입 성공",
+			responseCode = "200",
+			useReturnTypeSchema = true
+		),
+		@ApiResponse(
+			description = "이미 존재하는 회원일 경우",
+			responseCode = "409",
+			content = {@Content(schema = @Schema(implementation = DataResponse.class))}
+		)
+	})
 	@PostMapping("/register")
 	public DataResponse<RegisterResponse> memberRegister(
 		@RequestBody @Valid RegisterRequest registerRequest
 	) {
 		return DataResponse.successBodyResponse(HttpStatus.OK, memberService.memberRegister(registerRequest));
 	}
-
+	@Operation(summary = "사용자 로그인 API")
+	@ApiResponses(value = {
+		@ApiResponse(
+			description = "로그인 성공",
+			responseCode = "200",
+			useReturnTypeSchema = true
+		),
+		@ApiResponse(
+			description = "로그인 정보가 일치하지 않을경우",
+			responseCode = "400",
+			content = {@Content(schema = @Schema(implementation = DataResponse.class))}
+		)
+	})
 	@PostMapping("/login")
 	public DataResponse<LoginResponse> memberLogin(
 		@RequestBody LoginRequest loginRequest
 	) {
 		return DataResponse.successBodyResponse(HttpStatus.OK, memberService.memberLogin(loginRequest));
 	}
-
+	@Operation(summary = "사용자 정보 조회 API")
+	@ApiResponses(value = {
+		@ApiResponse(
+			description = "사용자 정보 조회 성공",
+			responseCode = "200",
+			useReturnTypeSchema = true
+		),
+		@ApiResponse(
+			description = "존재하지 않는 회원일경우",
+			responseCode = "404",
+			content = {@Content(schema = @Schema(implementation = DataResponse.class))}
+		)
+	})
 	@GetMapping
 	public DataResponse<MemberInfoResponse> memberInfo(
 		@AuthenticationPrincipal Member member
 	) {
 		return DataResponse.successBodyResponse(HttpStatus.OK, memberService.getMemberInfo(member));
 	}
-
+	@Operation(summary = "사용자 정보 수정 API")
+	@ApiResponses(value = {
+		@ApiResponse(
+			description = "사용자 정보 수정 성공",
+			responseCode = "200",
+			useReturnTypeSchema = true
+		),
+		@ApiResponse(
+			description = "존재하지 않는 회원일경우",
+			responseCode = "404",
+			content = {@Content(schema = @Schema(implementation = DataResponse.class))}
+		)
+	})
 	@PostMapping
 	public DataResponse<MemberInfoResponse> memberUpdate(
 		@RequestPart MemberUpdateRequest memberUpdateRequest,
@@ -63,7 +117,19 @@ public class MemberController {
 		return DataResponse.successBodyResponse(HttpStatus.OK,
 			memberService.memberUpdate(memberUpdateRequest, image, member));
 	}
-
+	@Operation(summary = "사용자 회원 탈퇴 API")
+	@ApiResponses(value = {
+		@ApiResponse(
+			description = "탈퇴 성공",
+			responseCode = "200",
+			useReturnTypeSchema = true
+		),
+		@ApiResponse(
+			description = "존재하지 않는 회원일경우",
+			responseCode = "404",
+			content = {@Content(schema = @Schema(implementation = DataResponse.class))}
+		)
+	})
 	@DeleteMapping
 	public DataResponse<String> memberUpdate(
 		@AuthenticationPrincipal Member member

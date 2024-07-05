@@ -61,7 +61,6 @@ public class NotificationService {
 		Member findSender = checkExistMember(sender);
 		SseResponse sseResponse = new SseResponse(findSender.getUserLoginId());
 
-		System.out.println("send new event");
 		sseRepository.get(findReceiver.getUserLoginId()).ifPresent(currentEmitter -> {
 			try {
 				currentEmitter.send(

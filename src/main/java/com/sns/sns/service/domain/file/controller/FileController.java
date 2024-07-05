@@ -20,12 +20,12 @@ import com.sns.sns.service.domain.member.model.entity.Member;
 
 import lombok.RequiredArgsConstructor;
 
-@RestController
-@RequestMapping("/api/v1/file")
+// @RestController
+// @RequestMapping("/api/v1/file")
 @RequiredArgsConstructor
 public class FileController {
 	private final ImageService imageService;
-	@PostMapping("/image/profile")
+	// @PostMapping("/image/profile")
 	public DataResponse<ImageResponse> uploadUserProfile(
 		@RequestParam("image") MultipartFile file,
 		@AuthenticationPrincipal Member member
@@ -33,7 +33,7 @@ public class FileController {
 		return DataResponse.successBodyResponse(HttpStatus.OK, imageService.uploadUserProfile(file, member));
 	}
 
-	@GetMapping("/image/profile")
+	// @GetMapping("/image/profile")
 	public DataResponse<ImageResponse> getUserProfile(
 		@AuthenticationPrincipal Member member
 	){
