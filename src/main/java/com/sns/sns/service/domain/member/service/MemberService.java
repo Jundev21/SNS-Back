@@ -61,7 +61,7 @@ public class MemberService {
 		);
 		Member memberDetail = (Member)authentication.getPrincipal();
 		memberDetail.UpdateVisitedCount();
-		String generatedJwtToken = jwtTokenInfo.generateToken(memberDetail.getUsername());
+		String generatedJwtToken = jwtTokenInfo.generateToken(memberDetail.getUserLoginId());
 		return new LoginResponse(generatedJwtToken, null);
 	}
 

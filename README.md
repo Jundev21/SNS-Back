@@ -7,6 +7,7 @@
     - 개발 언어 : `Javascript` , `TypeScript`
     - 개발 환경 : `React.js 17.0`
         - 라이브러리 / 의존성 : `Redux-Toolkit` , `Axios`, `Styled-Components` , `Bootstrap`
+    - Github: https://github.com/Jundev21/SNS-Front.git
 - 백엔드
     - 개발 언어 : `Java 17`
     - 개발 환경 : `Spring Boot 3.2.1`  , `Gradle 8.5`
@@ -42,7 +43,7 @@
 
 ### Swagger API
 
-url : http://54.180.139.49/swagger-ui
+url : http://54.180.139.49/swagger-ui/swagger-ui/index.html
 
 ### ERD 다이어그램
 <img width="851" alt="Screenshot 2024-07-05 at 2 38 42 PM" src="https://github.com/Jundev21/SNS-APP/assets/55421772/69d6921a-925e-45b4-88a2-1b9bcf46804f">

@@ -80,11 +80,9 @@ public class NotificationService {
 		SseEmitter sseEmitter = new SseEmitter(DEFAULT_TIME);
 		sseRepository.saveEmitter(findMember.getUserLoginId(), sseEmitter);
 
-		System.out.println("connected from server");
 		sseEmitter.onCompletion(() -> System.out.println("SSE connection completed for user: " + findMember.getUserLoginId()));
 		sseEmitter.onTimeout(() -> System.out.println("SSE connection timed out for user: " + findMember.getUserLoginId()));
 
-		System.out.println(member.getUsername() + " " + member.getId());
 		try {
 			sseEmitter.send(
 				SseEmitter
