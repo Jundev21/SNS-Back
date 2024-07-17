@@ -28,16 +28,16 @@ public class KafkaConfig {
     @Value("${spring.kafka.bootstrap-servers}")
     private String kafkaServer;
 
-    public KafkaStreamsConfiguration kafkaStreamsConfiguration(){
-        Map<String, Object> kafkaStreamConfig = new HashMap<>();
-        kafkaStreamConfig.put(StreamsConfig.APPLICATION_ID_CONFIG, "stream test");
-        kafkaStreamConfig.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaServer);
-        kafkaStreamConfig.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
-        kafkaStreamConfig.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
-        kafkaStreamConfig.put(StreamsConfig.NUM_STREAM_THREADS_CONFIG, 3);
-
-        return new KafkaStreamsConfiguration(kafkaStreamConfig);
-    }
+    // public KafkaStreamsConfiguration kafkaStreamsConfiguration(){
+    //     Map<String, Object> kafkaStreamConfig = new HashMap<>();
+    //     kafkaStreamConfig.put(StreamsConfig.APPLICATION_ID_CONFIG, "stream test");
+    //     kafkaStreamConfig.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaServer);
+    //     kafkaStreamConfig.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
+    //     kafkaStreamConfig.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
+    //     kafkaStreamConfig.put(StreamsConfig.NUM_STREAM_THREADS_CONFIG, 3);
+    //
+    //     return new KafkaStreamsConfiguration(kafkaStreamConfig);
+    // }
 
 //    @Bean
 //    public KafkaTemplate<String, Object> kafkaTemplate(){
