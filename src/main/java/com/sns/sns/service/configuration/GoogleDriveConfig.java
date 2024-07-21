@@ -25,6 +25,7 @@ public class GoogleDriveConfig {
 	private final GsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
 	private final String GOOGLE_KEY_PATH = getGoogleKeyPath();
 	private final String GOOGLE_FOLDER_ID = "1ONiE2w_UqbuXQynX803AiqJuKs1MVO8k";
+	private static final String APPLICATION_NAME = "sns-user-image";
 
 	public String uploadImageToGoogleDrive(MultipartFile imageRequest) {
 		if(imageRequest == null || imageRequest.isEmpty()) return "";
@@ -39,11 +40,9 @@ public class GoogleDriveConfig {
 
 			com.google.api.services.drive.model.File uploadFile = drive.files().create(fileData, mediaContent)
 				.setFields("id").execute();
-			String imageUrl = "https://drive.google.com/thumbnail?id=" + uploadFile.getId();
-			// String imageUrl = "https://www.googleapis.com/drive/v3/files/{fileId}" + uploadFile.getId() +"/export";
+			String imageUrl = "https://www.googleapis.com/drive/v3/files/{fileId}" + uploadFile.getId() +"/export";
 			tempFile.delete();
 			return imageUrl;
-
 		} catch (Exception e) {
 			throw new BasicException(ErrorCode.FAILED_GOOGLE_IMAGE, ErrorCode.FAILED_GOOGLE_IMAGE.getMsg());
 		}
@@ -82,7 +81,7 @@ public class GoogleDriveConfig {
 
 	private String getGoogleKeyPath() {
 		String currentDirectory = System.getProperty("user.dir");
-		Path filePath = Paths.get(currentDirectory, "googleCredential.json");
+		Path filePath = Paths.get(currentDirectory, "/src/main/resources/googleCredential.json");
 		return filePath.toString();
 	}
 
@@ -100,7 +99,9 @@ public class GoogleDriveConfig {
 
 			return new Drive.Builder(
 				GoogleNetHttpTransport.newTrustedTransport(), JSON_FACTORY,
-				new HttpCredentialsAdapter(credentials)).build();
+				new HttpCredentialsAdapter(credentials))
+				.setApplicationName(APPLICATION_NAME)
+				.build();
 		} catch (Exception e) {
 			throw new BasicException(ErrorCode.FAILED_GOOGLE_AUTHENTICATION,
 				ErrorCode.FAILED_GOOGLE_AUTHENTICATION.getMsg());

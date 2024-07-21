@@ -45,7 +45,7 @@ public class FavoriteController {
 	})
 	@PostMapping("/board/{boardId}")
 	public DataResponse<AddFavoriteResponse> addFavorite(
-		@PathVariable Long boardId,
+		@PathVariable("boardId") Long boardId,
 		@AuthenticationPrincipal Member member
 	) {
 		return DataResponse.successBodyResponse(HttpStatus.OK, favoriteService.addFavorite(boardId, member));
@@ -66,7 +66,7 @@ public class FavoriteController {
 	})
 	@GetMapping("/board/{boardId}")
 	public DataResponse<GetFavoriteResponse> getFavorite(
-		@PathVariable Long boardId,
+		@PathVariable("boardId") Long boardId,
 		@AuthenticationPrincipal Member member
 
 	) {
@@ -88,7 +88,7 @@ public class FavoriteController {
 	})
 	@DeleteMapping("/board/{boardId}")
 	public DataResponse<DeleteFavoriteResponse> deleteFavorite(
-		@PathVariable Long boardId,
+		@PathVariable("boardId") Long boardId,
 		@AuthenticationPrincipal Member member
 	) {
 		return DataResponse.successBodyResponse(HttpStatus.OK, favoriteService.deleteFavorite(boardId, member));

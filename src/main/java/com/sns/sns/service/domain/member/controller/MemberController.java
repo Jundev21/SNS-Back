@@ -110,8 +110,8 @@ public class MemberController {
 	})
 	@PostMapping
 	public DataResponse<MemberInfoResponse> memberUpdate(
-		@RequestPart MemberUpdateRequest memberUpdateRequest,
-		@RequestPart(required = false) MultipartFile image,
+		@RequestPart(value = "memberUpdateRequest") MemberUpdateRequest memberUpdateRequest,
+		@RequestPart(value = "image", required = false) MultipartFile image,
 		@AuthenticationPrincipal Member member
 	) {
 		return DataResponse.successBodyResponse(HttpStatus.OK,

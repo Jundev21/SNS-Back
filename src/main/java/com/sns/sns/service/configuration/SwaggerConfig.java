@@ -14,7 +14,7 @@ import io.swagger.v3.oas.models.security.SecurityScheme;
 
 @OpenAPIDefinition(
 	servers = {
-		@Server(url = "http://54.180.139.49", description = "Local Server")
+		@Server(url = "http:3.35.207.41", description = "Local Server")
 	},
 	info = @Info(
 		title = "SNS Service",

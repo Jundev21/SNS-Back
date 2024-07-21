@@ -52,7 +52,7 @@ public class CommentController {
 	})
 	@PostMapping("/{boardId}/comment")
 	public DataResponse<CommentPostResponse> createComment(
-		@PathVariable Long boardId,
+		@PathVariable("boardId")  Long boardId,
 		@AuthenticationPrincipal Member member,
 		@RequestBody @Valid CommentPostRequest commentPostRequest
 	) {
@@ -70,7 +70,7 @@ public class CommentController {
 	})
 	@GetMapping("/{boardId}/comment")
 	public DataResponse<List<CommentGetResponse>> getComment(
-		@PathVariable Long boardId
+		@PathVariable("boardId")  Long boardId
 	) {
 		return DataResponse.successBodyResponse(HttpStatus.OK, commentService.getComment(boardId));
 	}
@@ -90,8 +90,8 @@ public class CommentController {
 	})
 	@PutMapping("/{boardId}/comment/{commentId}")
 	public DataResponse<CommentUpdateResponse> updateComment(
-		@PathVariable Long boardId,
-		@PathVariable Long commentId,
+		@PathVariable("boardId")  Long boardId,
+		@PathVariable("commentId")  Long commentId,
 		@AuthenticationPrincipal Member member,
 		@RequestBody @Valid CommentUpdateRequest commentUpdateRequest
 
@@ -115,7 +115,7 @@ public class CommentController {
 	})
 	@DeleteMapping("/{boardId}/comment/{commentId}")
 	public DataResponse<String> deleteComment(
-		@PathVariable Long commentId,
+		@PathVariable("commentId") Long commentId,
 		@AuthenticationPrincipal Member member
 	) {
 		commentService.deleteComment(commentId, member);

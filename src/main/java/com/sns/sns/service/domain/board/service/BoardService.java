@@ -83,7 +83,7 @@ public class BoardService {
 
 	@Transactional(readOnly = true)
 	private Member checkExistMember(Member member) {
-		return memberRepository.findByUserName(member.getUserLoginId())
+		return memberRepository.findByUserLoginId(member.getUserLoginId())
 			.orElseThrow(() -> new BasicException(ErrorCode.NOT_EXIST_MEMBER, ErrorCode.NOT_EXIST_MEMBER.getMsg()));
 	}
 

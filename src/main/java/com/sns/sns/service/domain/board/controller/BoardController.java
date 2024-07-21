@@ -78,7 +78,7 @@ public class BoardController {
 	})
 	@PutMapping("/{boardId}")
 	public DataResponse<BoardUpdateResponse> updateBoard(
-		@PathVariable Long boardId,
+		@PathVariable("boardId") Long boardId,
 		@RequestBody @Valid BoardUpdateRequest boardUpdateRequest,
 		@AuthenticationPrincipal Member member
 	) {
@@ -101,7 +101,7 @@ public class BoardController {
 	})
 	@DeleteMapping("/{boardId}")
 	public DataResponse<BoardDeleteResponse> deleteBoard(
-		@PathVariable Long boardId,
+		@PathVariable("boardId") Long boardId,
 		@AuthenticationPrincipal Member member
 	) {
 		return DataResponse.successBodyResponse(HttpStatus.OK, boardService.deleteBoard(boardId, member));
@@ -122,7 +122,7 @@ public class BoardController {
 	})
 	@GetMapping("/{boardId}")
 	public DataResponse<BoardDetailResponse> getDetailBoard(
-		@PathVariable Long boardId
+		@PathVariable("boardId") Long boardId
 	) {
 		return DataResponse.successBodyResponse(HttpStatus.OK, boardService.getBoardDetail(boardId));
 	}
@@ -174,7 +174,7 @@ public class BoardController {
 	@GetMapping("/searching/{searchWord}")
 	public DataResponse<Page<BoardSearchResponse>> getSearchResult(
 		@PageableDefault(size = 12, sort = "createdTime", direction = Sort.Direction.DESC) Pageable pageable,
-		@PathVariable String searchWord
+		@PathVariable("searchWord") String searchWord
 	) {
 		return DataResponse.successBodyResponse(HttpStatus.OK, boardService.getSearchWord(searchWord, pageable));
 	}
