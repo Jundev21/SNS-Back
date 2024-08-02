@@ -40,7 +40,8 @@ public class GoogleDriveConfig {
 
 			com.google.api.services.drive.model.File uploadFile = drive.files().create(fileData, mediaContent)
 				.setFields("id").execute();
-			String imageUrl = "https://www.googleapis.com/drive/v3/files/{fileId}" + uploadFile.getId() +"/export";
+			// String imageUrl = "https://www.googleapis.com/drive/v3/files/" + uploadFile.getId() +"/export";
+			String imageUrl = loadImageFromGoogleDrive(uploadFile.getId());
 			tempFile.delete();
 			return imageUrl;
 		} catch (Exception e) {
@@ -50,7 +51,9 @@ public class GoogleDriveConfig {
 
 	public String loadImageFromGoogleDrive(String fileId) {
 		try {
-			return "https://drive.google.com/uc?export=view&id=" + fileId;
+			// return "https://drive.google.com/uc?export=view&id=" + fileId;
+			// return "https://drive.usercontent.google.com/download?id=" + fileId;
+			return "https://drive.google.com/thumbnail?id="+ fileId + "&sz=w1000";
 		} catch (Exception e) {
 			throw new BasicException(ErrorCode.FAILED_GOOGLE_IMAGE, ErrorCode.FAILED_GOOGLE_IMAGE.getMsg());
 		}
