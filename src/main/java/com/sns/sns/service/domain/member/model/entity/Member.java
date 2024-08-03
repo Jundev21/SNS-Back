@@ -9,6 +9,7 @@ import com.sns.sns.service.domain.comment.model.CommentEntity;
 import com.sns.sns.service.domain.favorite.model.FavoriteEntity;
 import com.sns.sns.service.domain.file.model.ImageEntity;
 import com.sns.sns.service.domain.member.model.UserRole;
+import com.sns.sns.service.domain.member.model.UserStatus;
 import com.sns.sns.service.domain.notification.model.NotificationEntity;
 
 import jakarta.persistence.*;
@@ -40,6 +41,8 @@ public class Member extends BaseTimeEntity implements UserDetails{
     private long visitedTimes;
     @Enumerated(EnumType.STRING)
     private UserRole role = UserRole.USER;
+    @Enumerated(EnumType.STRING)
+    private UserStatus userStatus;
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<BoardEntity> boardEntityList = new ArrayList<>();
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -56,13 +59,15 @@ public class Member extends BaseTimeEntity implements UserDetails{
             String username,
             String password,
             String userEmail,
-            String userProfileImgUrl
+            String userProfileImgUrl,
+            UserStatus userStatus
     ){
         this.userLoginId = userLoginId;
         this.userName = username;
         this.password = password;
         this.userEmail = userEmail;
         this.userProfileImgUrl = userProfileImgUrl;
+        this.userStatus = userStatus;
     }
     @JsonIgnore
     public void UpdateMemberInfo(
@@ -74,6 +79,14 @@ public class Member extends BaseTimeEntity implements UserDetails{
         this.password = password;
         this.userProfileImgUrl = userProfileImgUrl;
     }
+
+    @JsonIgnore
+    public void UpdateMemberStatus(
+            UserStatus userStatus
+    ){
+        this.userStatus = userStatus;
+    }
+
     public void UpdateVisitedCount(){
         this.visitedTimes +=1;
     }

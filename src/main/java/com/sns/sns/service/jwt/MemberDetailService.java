@@ -1,5 +1,6 @@
 package com.sns.sns.service.jwt;
 
+import com.sns.sns.service.domain.member.model.UserStatus;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -22,7 +23,10 @@ public class MemberDetailService implements UserDetailsService {
 	// 디비를 거치지않고 레디스 캐쉬를 사용해서 빠르게 확인할 수 있다.
 	@Override
 	public UserDetails loadUserByUsername(String loginId) throws UsernameNotFoundException {
-		return memberRepository.findByUserLoginId(loginId)
+//		return memberRepository.findByUserLoginId(loginId)
+//			.orElseThrow((() -> new BasicException(ErrorCode.NOT_EXIST_MEMBER, ErrorCode.NOT_EXIST_MEMBER.getMsg())));
+		return memberRepository.findByUserLoginIdAndUserStatus(loginId, UserStatus.JOIN)
 			.orElseThrow((() -> new BasicException(ErrorCode.NOT_EXIST_MEMBER, ErrorCode.NOT_EXIST_MEMBER.getMsg())));
+
 	}
 }

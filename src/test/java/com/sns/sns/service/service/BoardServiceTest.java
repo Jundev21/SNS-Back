@@ -7,6 +7,7 @@ import static org.mockito.Mockito.*;
 import java.util.List;
 import java.util.Optional;
 
+import com.sns.sns.service.domain.member.model.UserStatus;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -49,7 +50,7 @@ public class BoardServiceTest {
 		String content = "content";
 
 		BoardRequest boardRequest = new BoardRequest(title, content);
-		Member member = new Member("test", "test", "password", "email","img");
+		Member member = new Member("test", "test", "password", "email","img", UserStatus.JOIN);
 
 		when(memberRepository.findByUserName(anyString())).thenReturn(Optional.of(member));
 		when(boardRepository.save(any())).thenReturn(mock(BoardEntity.class));
@@ -65,7 +66,7 @@ public class BoardServiceTest {
 		String content = "content";
 
 		BoardRequest boardRequest = new BoardRequest(title, content);
-		Member member = new Member("test", "test", "password", "email","img");
+		Member member = new Member("test", "test", "password", "email","img", UserStatus.JOIN);
 
 		when(memberRepository.findByUserName(anyString())).thenReturn(Optional.empty());
 		when(boardRepository.save(any())).thenReturn(mock(BoardEntity.class));
@@ -87,7 +88,7 @@ public class BoardServiceTest {
 		String updateContent = "updatedContent";
 
 		BoardRequest boardRequest = new BoardRequest(title, content);
-		Member member = new Member("test", "test", "password", "email","img");
+		Member member = new Member("test", "test", "password", "email","img", UserStatus.JOIN);
 
 		BoardUpdateRequest boardUpdateRequest = new BoardUpdateRequest(updateTitle, updateContent);
 
@@ -114,7 +115,7 @@ public class BoardServiceTest {
 		String password = "password";
 
 		BoardUpdateRequest boardUpdateRequest = new BoardUpdateRequest(title, content);
-		Member member = new Member("test", "test", "password", "email","img");
+		Member member = new Member("test", "test", "password", "email","img", UserStatus.JOIN);
 
 		BoardEntity boardEntity = BoardData.updateBoard(boardUpdateRequest, member);
 
@@ -136,7 +137,7 @@ public class BoardServiceTest {
 		String password = "password";
 
 		BoardUpdateRequest boardUpdateRequest = new BoardUpdateRequest(title, content);
-		Member member = new Member("test", "test", "password", "email","img");
+		Member member = new Member("test", "test", "password", "email","img", UserStatus.JOIN);
 
 		BoardEntity boardEntity = BoardData.createNewBoard(boardRequestData(), member);
 
@@ -159,8 +160,8 @@ public class BoardServiceTest {
 		String password = "password";
 
 		BoardUpdateRequest boardUpdateRequest = new BoardUpdateRequest(title, content);
-		Member member = new Member("test", "test", "password", "email","img");
-		Member member2 = new Member("test", "test", "password", "email","img");
+		Member member = new Member("test", "test", "password", "email","img", UserStatus.JOIN);
+		Member member2 = new Member("test", "test", "password", "email","img", UserStatus.JOIN);
 
 		BoardEntity boardEntity = BoardData.createNewBoard(boardRequestData(), member);
 
@@ -182,7 +183,7 @@ public class BoardServiceTest {
 		//        멤버가 해당 게시물을 삭제하려는지 확인해야함.
 		String userName = "test";
 		String password = "password";
-		Member member = new Member("test", "test", "password", "email","img");
+		Member member = new Member("test", "test", "password", "email","img", UserStatus.JOIN);
 		BoardEntity boardEntity = new BoardEntity("title", "contents", member);
 
 		when(memberRepository.findByUserName(member.getUserLoginId())).thenReturn(Optional.of(member));
@@ -198,8 +199,8 @@ public class BoardServiceTest {
 
 		String userName = "test";
 		String password = "password";
-		Member member = new Member("test", "test", "password", "email","img");
-		Member member2 = new Member("test", "test", "password", "email","img");
+		Member member = new Member("test", "test", "password", "email","img", UserStatus.JOIN);
+		Member member2 = new Member("test", "test", "password", "email","img", UserStatus.JOIN);
 		BoardEntity boardEntity = new BoardEntity("title", "contents", member);
 
 		when(memberRepository.findByUserName(member.getUserLoginId())).thenReturn(Optional.of(member2));
@@ -221,7 +222,7 @@ public class BoardServiceTest {
 		String username = "test";
 		String password = "password";
 
-		Member member = new Member("test", "test", "password", "email","img");
+		Member member = new Member("test", "test", "password", "email","img", UserStatus.JOIN);
 
 		BoardEntity boardEntity = BoardData.createNewBoard(boardRequestData(), member);
 
@@ -239,7 +240,7 @@ public class BoardServiceTest {
 	public void getAllBoard() {
 		Pageable pageable = mock(Pageable.class);
 
-		Member member = new Member("test", "test", "password", "email","img");
+		Member member = new Member("test", "test", "password", "email","img", UserStatus.JOIN);
 		when(boardRepository.findAll(pageable)).thenReturn(Page.empty());
 		Assertions.assertDoesNotThrow(() -> boardService.getBoard(pageable));
 
@@ -248,7 +249,7 @@ public class BoardServiceTest {
 	@Test
 	@DisplayName("사용자 게시물 가져올 경우 성공")
 	public void getUserBoard() {
-		Member member = new Member("test", "test", "password", "email","img");
+		Member member = new Member("test", "test", "password", "email","img", UserStatus.JOIN);
 		Pageable pageable = mock(Pageable.class);
 
 		BoardEntity board = new BoardEntity("title", "content", member);
@@ -260,7 +261,7 @@ public class BoardServiceTest {
 	@Test
 	@DisplayName("게시물 가져올때 사용자가 없을 경우실패")
 	public void failedToGetNotExistUserBoard() {
-		Member member = new Member("test", "test", "password", "email","img");
+		Member member = new Member("test", "test", "password", "email","img", UserStatus.JOIN);
 		Pageable pageable = mock(Pageable.class);
 
 		BoardEntity board = new BoardEntity("title", "content", member);

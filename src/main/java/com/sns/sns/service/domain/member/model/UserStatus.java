@@ -1,15 +1,16 @@
 package com.sns.sns.service.domain.member.model;
 
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+
 @AllArgsConstructor
 @Getter
-public enum UserRole {
+public enum UserStatus {
 
-    USER("NORMAL_USER"),
-    ADMIN("ADMIN");
+    JOIN("회원"),
+    WITHDRAW("회원탈퇴");
 
-
-    private final String role;
+    private final String status;
 }

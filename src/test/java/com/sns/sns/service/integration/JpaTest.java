@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.sns.sns.service.domain.member.model.UserStatus;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +38,7 @@ public class JpaTest {
 	@DisplayName("JPA 게시판 findAll 댓글없는경우")
 	public void occurNPlusOne() {
 
-		Member member = new Member("test", "test", "password", "email","img");
+		Member member = new Member("test", "test", "password", "email","img", UserStatus.JOIN);
 		memberRepository.save(member);
 
 		for (int i = 0; i < 4; i++) {
@@ -55,7 +56,7 @@ public class JpaTest {
 	@DisplayName("JPA 게시판 findAll N+1 발생 케이스")
 	public void occurNPlusOneProblem() {
 
-		Member member = new Member("test", "test", "password", "email","img");
+		Member member = new Member("test", "test", "password", "email","img", UserStatus.JOIN);
 		memberRepository.save(member);
 
 		List<BoardEntity> boardEntities = new ArrayList<>();

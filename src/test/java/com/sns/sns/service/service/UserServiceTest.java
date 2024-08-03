@@ -6,6 +6,7 @@ import static org.mockito.Mockito.*;
 
 import java.util.Optional;
 
+import com.sns.sns.service.domain.member.model.UserStatus;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -51,7 +52,7 @@ public class UserServiceTest {
 
 		when(memberRepository.findByUserName(username)).thenReturn(Optional.empty());
 		when(memberRepository.save(any())).thenReturn(mock(Member.class));
-		when(memberRepository.save(any())).thenReturn(new Member("loginId", username, password, "email","img"));
+		when(memberRepository.save(any())).thenReturn(new Member("loginId", username, password, "email","img", UserStatus.JOIN));
 
 		Assertions.assertDoesNotThrow(() -> memberService.memberRegister(
 			new RegisterRequest("loginId", username, password, password, "email")
@@ -79,7 +80,7 @@ public class UserServiceTest {
 		String username = "username";
 		String password = "password";
 
-		Member newMember = new Member("loginId", username, password, "email","img");
+		Member newMember = new Member("loginId", username, password, "email","img", UserStatus.JOIN);
 
 		Authentication authentication = mock(Authentication.class);
 		when(authentication.getPrincipal()).thenReturn(newMember);
@@ -98,7 +99,7 @@ public class UserServiceTest {
 		String username = "username";
 		String password = "password";
 
-		Member newMember = new Member("loginId", username, password, "email","img");
+		Member newMember = new Member("loginId", username, password, "email","img", UserStatus.JOIN);
 
 		//when
 		when(authenticationManager.authenticate(any()))
@@ -119,7 +120,7 @@ public class UserServiceTest {
 		String password = "password";
 		String wrongPassword = "wrongPassword";
 
-		Member newMember = new Member("loginId", username, password, "email","img");
+		Member newMember = new Member("loginId", username, password, "email","img", UserStatus.JOIN);
 
 		Authentication authentication = mock(Authentication.class);
 		when(authentication.getPrincipal()).thenReturn(newMember);

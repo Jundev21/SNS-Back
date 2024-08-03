@@ -134,7 +134,7 @@ public class MemberController {
 	public DataResponse<String> memberUpdate(
 		@AuthenticationPrincipal Member member
 	) {
-		memberService.deleteMember(member);
+		memberService.softDeleteMember(member);
 		return DataResponse.successBodyResponse(HttpStatus.OK, "사용자가 삭제되었습니다.");
 	}
 

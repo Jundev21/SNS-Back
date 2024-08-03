@@ -1,0 +1,44 @@
+server:
+  http2:
+    enabled: true
+
+spring:
+  datasource:
+    url: jdbc:h2:mem:sns
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  h2:
+    console:
+      enabled: true
+  jpa:
+    show-sql: true
+    open-in-view: false
+    generate-ddl: true
+    properties:
+      hibernate:
+        ddl-auto: update
+        format_sql: true
+    #        default_batch_fetch_size: 1000
+    defer-datasource-initialization: true
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
+  kafka:
+    bootstrap-servers: localhost:9092
+
+  swagger-ui:
+    path: /swagger-ui
+    enabled: true
+  sql:
+    init:
+      mode: always
+jwt:
+  secret:
+    key: 612E3DFC176A8E32A3E59C2AC65D2612E3DFC176A8E32A3E59C2AC65D2
+  token:
+    expired-time: 86400000
+

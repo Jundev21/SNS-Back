@@ -1,5 +1,6 @@
 package com.sns.sns.service.domain.member.service;
 
+import com.sns.sns.service.domain.member.model.UserStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -43,7 +44,8 @@ public class MemberService {
 				registerRequest.userName(),
 				encoder.encode(registerRequest.password()),
 				registerRequest.userEmail(),
-				""
+				"",
+					UserStatus.JOIN
 			));
 		return RegisterResponse.fromEntity(newMember);
 	}
@@ -79,7 +81,13 @@ public class MemberService {
 	}
 
 	@Transactional
-	public void deleteMember(Member member) {
+	public void softDeleteMember(Member member) {
+		Member findMember = notValidMember(member.getUserLoginId());
+		findMember.UpdateMemberStatus(UserStatus.WITHDRAW);
+	}
+
+	@Transactional
+	public void hardDeleteMember(Member member) {
 		notValidMember(member.getUserLoginId());
 		memberRepository.delete(member);
 	}
@@ -100,7 +108,9 @@ public class MemberService {
 
 	@Transactional(readOnly = true)
 	public Member notValidMember(String loginId) {
-		return memberRepository.findByUserLoginId(loginId)
+//		return memberRepository.findByUserLoginId(loginId)
+//			.orElseThrow((() -> new BasicException(ErrorCode.NOT_EXIST_MEMBER, ErrorCode.NOT_EXIST_MEMBER.getMsg())));
+ 		return memberRepository.findByUserLoginIdAndUserStatus(loginId, UserStatus.JOIN)
 			.orElseThrow((() -> new BasicException(ErrorCode.NOT_EXIST_MEMBER, ErrorCode.NOT_EXIST_MEMBER.getMsg())));
 	}
 
