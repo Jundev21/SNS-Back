@@ -1,4 +1,4 @@
-INSERT INTO Member (CREATED_TIME, UPDATED_TIME, USER_LOGIN_ID, USER_NAME, USER_EMAIL, PASSWORD, USER_PROFILE_IMG_URL, VISITED_TIMES, ROLE)
+INSERT INTO member (CREATED_TIME, UPDATED_TIME, USER_LOGIN_ID, USER_NAME, USER_EMAIL, PASSWORD, USER_PROFILE_IMG_URL, VISITED_TIMES, ROLE)
 VALUES
 ('2023-01-01 08:30:00', '2023-01-01 08:30:00', 'honggildong', '홍길동', 'honggildong@example.com', '$2a$10$7vE5N9meI5U/dfi4LF3HqeFrN5kK/pF3YbHLQX5/96hP.b/CiD6nO', 'https://randomuser.me/api/portraits/men/1.jpg', 150, 'USER'),
 ('2023-02-01 09:30:00', '2023-02-01 09:30:00', 'leess', '이순신', 'leess@example.com', '$2a$10$.ZiA4TJmsOw8m14iNfwe3u7/bblC/td/ebcy55.Q5z2Fzk7izF3Bu', 'https://randomuser.me/api/portraits/women/1.jpg', 200, 'USER'),
@@ -22,7 +22,7 @@ VALUES
 ('2023-09-15 18:00:00', '2023-09-15 18:00:00', 'natasharomanoff', 'Natasha Romanoff', 'natasharomanoff@example.com', '$2a$10$P9jz/O9zW3P2IoPd0Me5m/RGQFfDlE5Pn0jG4F7A2C6f', 'https://randomuser.me/api/portraits/men/19.jpg', 245, 'USER'),
 ('2023-10-15 19:30:00', '2023-10-15 19:30:00', 'brucebanner', 'Bruce Banner', 'brucebanner@example.com', '$2a$10$Y2s8tP2uDoX2Gd4d4F2F5OROkF9vE6Pd9oS4M4H0J5v', 'https://randomuser.me/api/portraits/women/19.jpg', 255, 'USER');
 
-INSERT INTO Board_Entity (CREATED_TIME, UPDATED_TIME, TITLE, CONTENTS, MEMBER_ID)
+INSERT INTO board_entity (CREATED_TIME, UPDATED_TIME, TITLE, CONTENTS, MEMBER_ID)
 VALUES
 ('2023-01-01 09:00:00', '2023-01-01 09:00:00', '겨울 여행 계획', '올해 겨울에 어디로 여행을 갈지 고민 중입니다. 추천해 주세요!', 1),
 ('2023-02-01 10:00:00', '2023-02-01 10:00:00', '초코 케이크 만들기', '초코 케이크 레시피를 공유합니다. 맛있게 만들어 보세요!', 2),
@@ -45,7 +45,7 @@ VALUES
 ('2023-09-15 17:00:00', '2023-09-15 17:00:00', '건강한 식단 만들기', '건강한 식단을 만들기 위한 팁을 제공합니다. 여러분도 함께 해보세요!', 19),
 ('2023-10-15 18:00:00', '2023-10-15 18:00:00', '독서의 즐거움', '독서가 주는 다양한 즐거움에 대해 이야기해봅시다.', 20);
 
-INSERT INTO Comment_Entity (CREATED_TIME, UPDATED_TIME, CONTENT, BOARD_ENTITY_ID, MEMBER_ID, NOTIFICATION_ENTITY_ID)
+INSERT INTO comment_entity (CREATED_TIME, UPDATED_TIME, CONTENT, BOARD_ENTITY_ID, MEMBER_ID, NOTIFICATION_ENTITY_ID)
 VALUES
 ('2023-01-02 09:30:00', '2023-01-02 09:30:00', '겨울 여행지로 추천할 만한 곳이 있을까요?', 1, 2, NULL),
 ('2023-02-02 10:30:00', '2023-02-02 10:30:00', '초코 케이크 정말 맛있어 보이네요. 레시피 공유해 주셔서 감사합니다!', 2, 3, NULL),
@@ -61,7 +61,7 @@ VALUES
 ('2023-02-16 10:30:00', '2023-02-16 10:30:00', '아침 운동은 확실히 하루를 상쾌하게 시작하게 해줘요.', 12, 13, NULL),
 ('2023-03-16 11:30:00', '2023-03-16 11:30:00', '영화 감상 후기 잘 읽었어요. 저도 비슷한 감정이었어요.', 13, 14, NULL);
 
-INSERT INTO Favorite_Entity (CREATED_TIME, UPDATED_TIME, IS_CLICKED, BOARD_ENTITY_ID, MEMBER_ID, NOTIFICATION_ENTITY_ID)
+INSERT INTO favorite_entity (CREATED_TIME, UPDATED_TIME, IS_CLICKED, BOARD_ENTITY_ID, MEMBER_ID, NOTIFICATION_ENTITY_ID)
 VALUES
 ('2023-01-03 10:00:00', '2023-01-03 10:00:00', true, 1, 2, NULL),
 ('2023-02-03 11:00:00', '2023-02-03 11:00:00', true, 2, 3, NULL),

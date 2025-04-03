@@ -14,7 +14,7 @@ spring:
     password: ${DATABASE_PASSWORD}
     driver-class-name: org.postgresql.Driver
   jpa:
-    database: postgresql₩
+    database: postgresql
     hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
     hibernate.ddl-auto: update
     show-sql: true

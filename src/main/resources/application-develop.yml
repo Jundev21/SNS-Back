@@ -9,7 +9,8 @@ spring:
 #    username: sa
 #    password:
   datasource:
-    url: jdbc:mysql://localhost:3306/sns_service?useSSL=false&serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+#    url: jdbc:mysql://localhost:3306/sns_service?useSSL=false&serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    url: jdbc:mysql://localhost:3306/sns_service
     username: root
     password: 1234
   h2:
@@ -21,7 +22,7 @@ spring:
     generate-ddl: true
     properties:
       hibernate:
-        ddl-auto: update
+        ddl-auto: auto
         format_sql: true
 #        default_batch_fetch_size: 1000
     defer-datasource-initialization: true
@@ -31,8 +32,8 @@ spring:
       host: localhost
       port: 6379
 
-  kafka:
-    bootstrap-servers: localhost:9092
+#  kafka:
+#    bootstrap-servers: localhost:9092
 
   swagger-ui:
     path: /swagger-ui
