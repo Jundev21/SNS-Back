@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 //@RequiredArgsConstructor
 public class KafkaService {
 
-    private static final Serde<String> STRING_SERDE = Serdes.String();
+//    private static final Serde<String> STRING_SERDE = Serdes.String();
 
 //    @Bean
 //    public void buildPipeline(StreamsBuilder sb){

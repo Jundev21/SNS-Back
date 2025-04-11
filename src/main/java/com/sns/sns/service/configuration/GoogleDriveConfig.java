@@ -1,6 +1,5 @@
 package com.sns.sns.service.configuration;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
@@ -45,7 +44,8 @@ public class GoogleDriveConfig {
 			tempFile.delete();
 			return imageUrl;
 		} catch (Exception e) {
-			throw new BasicException(ErrorCode.FAILED_GOOGLE_IMAGE, ErrorCode.FAILED_GOOGLE_IMAGE.getMsg());
+//			throw new BasicException(ErrorCode.FAILED_GOOGLE_IMAGE, ErrorCode.FAILED_GOOGLE_IMAGE.getMsg());
+			throw new BasicException(ErrorCode.FAILED_GOOGLE_IMAGE, e.toString());
 		}
 	}
 
@@ -92,7 +92,7 @@ public class GoogleDriveConfig {
 		try {
 			// GoogleCredentials credentials = GoogleCredentials.fromStream(new FileInputStream(GOOGLE_KEY_PATH))
 			// 	.createScoped(Collections.singleton(DriveScopes.DRIVE));
-			InputStream credentialsStream = getClass().getClassLoader().getResourceAsStream("googleCredential.json");
+			InputStream credentialsStream = getClass().getClassLoader().getResourceAsStream("src/googleCredential.json");
 			if (credentialsStream == null) {
 				throw new IOException("Resource not found: googleCredential.json");
 			}

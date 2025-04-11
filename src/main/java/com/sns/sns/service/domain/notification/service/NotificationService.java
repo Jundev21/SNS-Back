@@ -32,16 +32,11 @@ public class NotificationService {
     private final CommentRepository commentRepository;
     private final FavoriteRepository favoriteRepository;
     private final SseRepository sseRepository;
-    private final KafkaTemplate<String, Object> kafkaTemplate;
+//    private final KafkaTemplate<String, Object> kafkaTemplate;
 
-    private final String kafkaTopic = "notification";
+//    private final String kafkaTopic = "notification";
     private final static String EVENT_NAME = "alarm";
     private final static Long DEFAULT_TIME = 30L * 60 * 1000;
-
-
-//    SSE 특징 클라이언트와 서버가 커넥션을 유지한다. 클라이언트가 여러명이면 유지되는 커넥터가 많이지기때문에 서버 부하가 많아질 수 있다.
-//
-//    클라이언트가 네트워크 문제로 끊어지게되면 데이터 손실이 발생한다.
 
     public NotificationResponse makeNotification(Member member) {
 
@@ -98,7 +93,8 @@ public class NotificationService {
     }
 
     public void sendProducer(String msg) {
-        kafkaTemplate.send(kafkaTopic, msg);
+
+//        kafkaTemplate.send(kafkaTopic, msg);
     }
 
     //    @KafkaListener(topics = kafkaTopic, groupId = "notificationGroup")
