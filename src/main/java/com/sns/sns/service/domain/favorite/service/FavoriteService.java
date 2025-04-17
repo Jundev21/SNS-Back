@@ -1,15 +1,9 @@
 package com.sns.sns.service.domain.favorite.service;
 
-import static com.sns.sns.service.common.exception.ErrorCode.*;
-
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.sns.sns.service.common.exception.BasicException;
 import com.sns.sns.service.common.exception.ErrorCode;
 import com.sns.sns.service.domain.board.model.BoardEntity;
 import com.sns.sns.service.domain.board.repository.BoardRepository;
-import com.sns.sns.service.domain.comment.model.CommentEntity;
 import com.sns.sns.service.domain.favorite.dto.response.AddFavoriteResponse;
 import com.sns.sns.service.domain.favorite.dto.response.DeleteFavoriteResponse;
 import com.sns.sns.service.domain.favorite.dto.response.GetFavoriteResponse;
@@ -21,8 +15,9 @@ import com.sns.sns.service.domain.notification.dto.NotificationType;
 import com.sns.sns.service.domain.notification.model.NotificationEntity;
 import com.sns.sns.service.domain.notification.repository.NotificationRepository;
 import com.sns.sns.service.domain.notification.service.NotificationService;
-
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -67,13 +62,13 @@ public class FavoriteService {
 	}
 
 	@Transactional(readOnly = true)
-	private Member checkExistMember(Member member) {
+    protected Member checkExistMember(Member member) {
 		return memberRepository.findByUserLoginId(member.getUserLoginId())
 			.orElseThrow(() -> new BasicException(ErrorCode.NOT_EXIST_MEMBER, ErrorCode.NOT_EXIST_MEMBER.getMsg()));
 	}
 
 	@Transactional(readOnly = true)
-	private FavoriteEntity handleFavoritePermission(BoardEntity board, Member member) {
+    protected FavoriteEntity handleFavoritePermission(BoardEntity board, Member member) {
 		return favoriteRepository
 			.findFavoriteEntityByBoardEntityAndMember(board, member)
 			.orElseThrow(() -> new BasicException(ErrorCode.INVALID_PERMISSION_FAVORITE,
@@ -81,7 +76,7 @@ public class FavoriteService {
 	}
 
 	@Transactional(readOnly = true)
-	private void checkExistFavorite(BoardEntity board, Member member) {
+    protected void checkExistFavorite(BoardEntity board, Member member) {
 		favoriteRepository
 			.findFavoriteEntityByBoardEntityAndMember(board, member)
 			.ifPresent(e -> {
@@ -90,7 +85,7 @@ public class FavoriteService {
 	}
 
 	@Transactional(readOnly = true)
-	private BoardEntity findBoard(Long boardId) {
+    protected BoardEntity findBoard(Long boardId) {
 		return boardRepository.findById(boardId)
 			.orElseThrow(() -> new BasicException(ErrorCode.NOT_EXIST_BOARD, ErrorCode.NOT_EXIST_BOARD.getMsg()));
 	}

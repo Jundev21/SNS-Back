@@ -82,19 +82,19 @@ public class BoardService {
 	}
 
 	@Transactional(readOnly = true)
-	private Member checkExistMember(Member member) {
+    protected Member checkExistMember(Member member) {
 		return memberRepository.findByUserLoginId(member.getUserLoginId())
 			.orElseThrow(() -> new BasicException(ErrorCode.NOT_EXIST_MEMBER, ErrorCode.NOT_EXIST_MEMBER.getMsg()));
 	}
 
 	@Transactional(readOnly = true)
-	private BoardEntity getBoardEntity(Long boardId) {
+    protected BoardEntity getBoardEntity(Long boardId) {
 		return boardRepository.findById(boardId)
 			.orElseThrow(() -> new BasicException(ErrorCode.NOT_EXIST_BOARD, ErrorCode.NOT_EXIST_BOARD.getMsg()));
 	}
 
 	@Transactional(readOnly = true)
-	private void checkUpdatePermission(Member member, BoardEntity board) {
+    protected void checkUpdatePermission(Member member, BoardEntity board) {
 		if (!member.getUserLoginId().equals(board.getMember().getUserLoginId())) {
 			throw new BasicException(ErrorCode.INVALID_PERMISSION, ErrorCode.INVALID_PERMISSION.getMsg());
 		}

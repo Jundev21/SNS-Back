@@ -13,7 +13,6 @@ import com.sns.sns.service.domain.notification.repository.NotificationRepository
 import com.sns.sns.service.domain.notification.repository.SseRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -92,15 +91,8 @@ public class NotificationService {
         return sseEmitter;
     }
 
-    public void sendProducer(String msg) {
-
-//        kafkaTemplate.send(kafkaTopic, msg);
-    }
-
-    //    @KafkaListener(topics = kafkaTopic, groupId = "notificationGroup")
-
     @Transactional(readOnly = true)
-    private Member checkExistMember(Member member) {
+    protected Member checkExistMember(Member member) {
         return memberRepository.findByUserLoginId(member.getUserLoginId())
                 .orElseThrow(() -> new BasicException(ErrorCode.NOT_EXIST_MEMBER, ErrorCode.NOT_EXIST_MEMBER.getMsg()));
     }

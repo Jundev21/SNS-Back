@@ -99,19 +99,19 @@ public class CommentService {
 	}
 
 	@Transactional(readOnly = true)
-	private Member checkExistMember(Member member) {
+    protected Member checkExistMember(Member member) {
 		return memberRepository.findByUserLoginId(member.getUserLoginId())
 			.orElseThrow(() -> new BasicException(ErrorCode.NOT_EXIST_MEMBER, ErrorCode.NOT_EXIST_MEMBER.getMsg()));
 	}
 
 	@Transactional(readOnly = true)
-	private CommentEntity findComment(Long commentId) {
+    protected CommentEntity findComment(Long commentId) {
 		return commentRepository.findById(commentId)
 			.orElseThrow(() -> new BasicException(NOT_EXIST_COMMENT, NOT_EXIST_COMMENT.getMsg()));
 	}
 
 	@Transactional(readOnly = true)
-	private BoardEntity findBoard(Long boardId) {
+    protected BoardEntity findBoard(Long boardId) {
 		return boardRepository.findById(boardId)
 			.orElseThrow(() -> new BasicException(NOT_EXIST_BOARD, NOT_EXIST_BOARD.getMsg()));
 	}
