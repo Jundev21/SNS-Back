@@ -90,9 +90,7 @@ public class GoogleDriveConfig {
 
 	private Drive connectGoogleDrive() {
 		try {
-			// GoogleCredentials credentials = GoogleCredentials.fromStream(new FileInputStream(GOOGLE_KEY_PATH))
-			// 	.createScoped(Collections.singleton(DriveScopes.DRIVE));
-			InputStream credentialsStream = getClass().getClassLoader().getResourceAsStream("src/googleCredential.json");
+			InputStream credentialsStream = getClass().getClassLoader().getResourceAsStream("googleCredential.json");
 			if (credentialsStream == null) {
 				throw new IOException("Resource not found: googleCredential.json");
 			}
