@@ -2,7 +2,6 @@ package com.sns.sns.service.domain.member.service;
 
 import com.sns.sns.service.domain.member.model.UserStatus;
 import com.sns.sns.service.domain.member.repository.MemberRedisRepo;
-import com.sns.sns.service.domain.member.repository.MemberRedisRepository;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -78,7 +77,7 @@ public class MemberService {
 		Member updatedMember = findMember.UpdateMemberInfo(memberUpdateRequest.userEmail(), encoder.encode(memberUpdateRequest.password()),
 			imageUrl);
 		memberRedisRepo.setMember(updatedMember);
-		return MemberInfoResponse.memberInfo(member);
+		return MemberInfoResponse.memberInfo(updatedMember);
 	}
 
 	@Transactional
@@ -109,8 +108,6 @@ public class MemberService {
 
 	@Transactional(readOnly = true)
 	public Member notValidMember(String loginId) {
-//		return memberRepository.findByUserLoginId(loginId)
-//			.orElseThrow((() -> new BasicException(ErrorCode.NOT_EXIST_MEMBER, ErrorCode.NOT_EXIST_MEMBER.getMsg())));
  		return memberRepository.findByUserLoginIdAndUserStatus(loginId, UserStatus.JOIN)
 			.orElseThrow((() -> new BasicException(ErrorCode.NOT_EXIST_MEMBER, ErrorCode.NOT_EXIST_MEMBER.getMsg())));
 	}

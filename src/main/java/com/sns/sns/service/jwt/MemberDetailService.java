@@ -5,7 +5,6 @@ import com.sns.sns.service.common.exception.ErrorCode;
 import com.sns.sns.service.domain.member.model.UserStatus;
 import com.sns.sns.service.domain.member.model.entity.Member;
 import com.sns.sns.service.domain.member.repository.MemberRedisRepo;
-import com.sns.sns.service.domain.member.repository.MemberRedisRepository;
 import com.sns.sns.service.domain.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
