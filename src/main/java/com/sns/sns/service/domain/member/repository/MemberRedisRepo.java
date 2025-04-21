@@ -17,7 +17,6 @@ import lombok.extern.slf4j.Slf4j;
 public class MemberRedisRepo {
 
 	private final RedisTemplate<String, Member> memberRedisTemplate;
-	// time limit 걸어줘야함 왜냐하면 멤버가 더이상 서비스를 사용하지 않을 경우에는 메모리 낭비가 될 수 있기 때문
 	private final Duration redisLimitTime = Duration.ofDays(7);
 
 	public void setMember(Member member) {
@@ -26,16 +25,15 @@ public class MemberRedisRepo {
 		memberRedisTemplate.opsForValue().set(getKey(member.getUserLoginId()), member, redisLimitTime);
 	}
 
-	public Optional<Member> getMember(String userName) {
-
-		String key = getKey(userName);
-		Member member = memberRedisTemplate.opsForValue().get(getKey(userName));
+	public Optional<Member> getMember(String loginId) {
+		String key = getKey(loginId);
+		Member member = memberRedisTemplate.opsForValue().get(getKey(loginId));
 		log.info("get user data to redis,{},{}", key, member);
 		return Optional.ofNullable(member);
 	}
 
 	//prefix 를 추가해줘서 어떤 데이터를 저장하는 키인지 알려 줌
-	private String getKey(String userName) {
-		return "Member" + userName;
+	private String getKey(String loginId) {
+		return "Member loginId " + loginId;
 	}
 }
