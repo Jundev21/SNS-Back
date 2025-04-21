@@ -7,12 +7,12 @@ spring:
     activate:
       on-profile: default
 
-  datasource:
-    hikari.maximum-pool-size: 4
-    url: ${DATABASE_AWS_URL}
-    username: ${DATABASE_USERNAME}
-    password: ${DATABASE_PASSWORD}
-    driver-class-name: org.postgresql.Driver
+#  datasource:
+#    hikari.maximum-pool-size: 4
+#    url: ${DATABASE_AWS_URL}
+#    username: ${DATABASE_USERNAME}
+#    password: ${DATABASE_PASSWORD}
+#    driver-class-name: org.postgresql.Driver
   jpa:
     database: postgresql
     hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect

@@ -6,6 +6,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collections;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -23,8 +24,10 @@ import com.sns.sns.service.common.exception.ErrorCode;
 public class GoogleDriveConfig {
 	private final GsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
 	private final String GOOGLE_KEY_PATH = getGoogleKeyPath();
-	private final String GOOGLE_FOLDER_ID = "1ONiE2w_UqbuXQynX803AiqJuKs1MVO8k";
-	private static final String APPLICATION_NAME = "sns-user-image";
+	@Value("${google.folder-id}")
+	private String GOOGLE_FOLDER_ID;
+	@Value("${google.application-name}")
+	private String APPLICATION_NAME;
 
 	public String uploadImageToGoogleDrive(MultipartFile imageRequest) {
 		if(imageRequest == null || imageRequest.isEmpty()) return "";
@@ -39,20 +42,16 @@ public class GoogleDriveConfig {
 
 			com.google.api.services.drive.model.File uploadFile = drive.files().create(fileData, mediaContent)
 				.setFields("id").execute();
-			// String imageUrl = "https://www.googleapis.com/drive/v3/files/" + uploadFile.getId() +"/export";
 			String imageUrl = loadImageFromGoogleDrive(uploadFile.getId());
 			tempFile.delete();
 			return imageUrl;
 		} catch (Exception e) {
-//			throw new BasicException(ErrorCode.FAILED_GOOGLE_IMAGE, ErrorCode.FAILED_GOOGLE_IMAGE.getMsg());
 			throw new BasicException(ErrorCode.FAILED_GOOGLE_IMAGE, e.toString());
 		}
 	}
 
 	public String loadImageFromGoogleDrive(String fileId) {
 		try {
-			// return "https://drive.google.com/uc?export=view&id=" + fileId;
-			// return "https://drive.usercontent.google.com/download?id=" + fileId;
 			return "https://drive.google.com/thumbnail?id="+ fileId + "&sz=w1000";
 		} catch (Exception e) {
 			throw new BasicException(ErrorCode.FAILED_GOOGLE_IMAGE, ErrorCode.FAILED_GOOGLE_IMAGE.getMsg());

@@ -44,3 +44,8 @@ jwt:
   token:
     expired-time: 86400000
 
+
+google:
+  folder-id: 1ONiE2w_UqbuXQynX803AiqJuKs1MVO8k
+  application-name: sns-user-image
+
