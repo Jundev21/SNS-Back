@@ -1,6 +1,8 @@
 package com.sns.sns.service.domain.member.service;
 
 import com.sns.sns.service.domain.member.model.UserStatus;
+import com.sns.sns.service.domain.member.repository.MemberRedisRepo;
+import com.sns.sns.service.domain.member.repository.MemberRedisRepository;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -33,6 +35,7 @@ public class MemberService {
 	private final BCryptPasswordEncoder encoder;
 	private final AuthenticationManager authenticationManager;
 	private final JwtTokenInfo jwtTokenInfo;
+	private final MemberRedisRepo memberRedisRepo;
 
 	@Transactional
 	public RegisterResponse memberRegister(RegisterRequest registerRequest) {
@@ -52,9 +55,6 @@ public class MemberService {
 
 	@Transactional
 	public LoginResponse memberLogin(LoginRequest loginRequest) {
-		//로컬 레디스 저장
-		//Member member = loadMemberByMemberName(loginRequest.userName());
-		// memberRedisRepo.setMember(member);
 		Authentication authentication = authenticationManager.authenticate(
 			new UsernamePasswordAuthenticationToken(
 				loginRequest.userLoginId(),
@@ -75,8 +75,9 @@ public class MemberService {
 		if (imageUrl.isEmpty()) {
 			imageUrl = findMember.getUserProfileImgUrl();
 		}
-		findMember.UpdateMemberInfo(memberUpdateRequest.userEmail(), encoder.encode(memberUpdateRequest.password()),
+		Member updatedMember = findMember.UpdateMemberInfo(memberUpdateRequest.userEmail(), encoder.encode(memberUpdateRequest.password()),
 			imageUrl);
+		memberRedisRepo.setMember(updatedMember);
 		return MemberInfoResponse.memberInfo(member);
 	}
 

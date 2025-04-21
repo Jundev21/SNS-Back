@@ -70,7 +70,7 @@ public class Member extends BaseTimeEntity implements UserDetails{
         this.userStatus = userStatus;
     }
     @JsonIgnore
-    public void UpdateMemberInfo(
+    public Member UpdateMemberInfo(
             String userEmail,
             String password,
             String userProfileImgUrl
@@ -78,6 +78,7 @@ public class Member extends BaseTimeEntity implements UserDetails{
         this.userEmail = userEmail;
         this.password = password;
         this.userProfileImgUrl = userProfileImgUrl;
+        return this;
     }
 
     @JsonIgnore

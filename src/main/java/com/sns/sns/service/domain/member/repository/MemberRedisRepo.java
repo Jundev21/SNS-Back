@@ -32,7 +32,6 @@ public class MemberRedisRepo {
 		return Optional.ofNullable(member);
 	}
 
-	//prefix 를 추가해줘서 어떤 데이터를 저장하는 키인지 알려 줌
 	private String getKey(String loginId) {
 		return "Member loginId " + loginId;
 	}
