@@ -1,4 +1,8 @@
 services:
+  app:
+    build:
+      context: .
+
   mysql:
     image: mysql:latest
     container_name: mysql
