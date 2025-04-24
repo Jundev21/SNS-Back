@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration scan="true" scanPeriod="60 seconds">
+    <timestamp key="BY_DATE" datePattern="yyyy-MM-dd"/>
+    <property name="LOG_PATTERN"
+              value="[%d{yyyy-MM-dd HH:mm:ss}:%-4relative] %green([%thread]) %highlight(%-5level) %boldWhite([%C.%M:%yellow(%L)]) - %msg%n"/>
+    <property name="LOG_DIR" value="/Users/junraekim/Desktop/log"/>
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+<!--            로그 레벨 필터링 하는 부분-->
+            <level>INFO</level>
+        </filter>
+        <file>${LOG_DIR}/info.log</file>
+        <append>true</append>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_DIR}/info.%d{yyyy-MM-dd_HH-mm}.log</fileNamePattern>
+            <!--                기간 설정 30일-->
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder>d
+            <!--                패턴 어떻게 로그에 표현할 것인지 표시하는 부분-->
+            <pattern>${LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+    <!--        로그 레벨 설정 == INFO 레벨 에 단계를 appender-ref 에 적용하겠다 라는 뜻-->
+    <root level="INFO">
+        <!--            <appender-ref ref="CONSOLE"/>-->
+        <appender-ref ref="FILE"/>
+    </root>
+
+</configuration>
