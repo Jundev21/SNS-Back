@@ -43,14 +43,19 @@ public class Member extends BaseTimeEntity implements UserDetails{
     private UserRole role = UserRole.USER;
     @Enumerated(EnumType.STRING)
     private UserStatus userStatus;
+    @JsonIgnore
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<BoardEntity> boardEntityList = new ArrayList<>();
+    @JsonIgnore
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<FavoriteEntity> favoriteEntityList = new ArrayList<>();
+    @JsonIgnore
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<CommentEntity> commentEntityList = new ArrayList<>();
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<NotificationEntity> notificationEntityList = new ArrayList<>();
+    @JsonIgnore
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ImageEntity> imageEntities = new ArrayList<>();
     @JsonIgnore
